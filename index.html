@@ -183,7 +183,6 @@ body.display .top,body.display .ctrl{display:none!important}
 body.display .host{grid-template-rows:1fr}
 body.display .opening .go,body.display .opening .links,body.display #openMode{display:none!important}
 body.display .qr .btn,body.display .qr .warn{display:none!important}
-body.display .bb{cursor:default}
 body.display.nocursor,body.display.nocursor *{cursor:none!important}
 .fshint{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:70;display:flex;gap:14px;align-items:center;padding:12px 20px;border-radius:999px;background:var(--goldbg);color:#2B100A;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 10px 40px rgba(0,0,0,.35);max-width:calc(100vw - 32px)}
 .fshint b{letter-spacing:.22em;font-size:11px;white-space:nowrap}
@@ -219,6 +218,17 @@ body.light .refl{background:linear-gradient(90deg,rgba(249,90,68,.12),rgba(249,9
 body.light .bb{box-shadow:0 14px 40px rgba(96,38,28,.22)}
 body.light .bb.solo{background:radial-gradient(circle at 34% 28%,#8A3A2A,#60261C 70%);border-color:rgba(96,38,28,.3)}
 body.light .bb.r0{color:#2B100A}
+
+/* detail of one bubble shown big on the projector */
+.focusov{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:4vh 5vw;background:rgba(20,7,4,.74);backdrop-filter:blur(6px);animation:fade .4s both}
+body.light .focusov{background:rgba(251,247,236,.84)}
+.fo-card{width:min(1400px,100%);max-height:100%;overflow:hidden;background:var(--navy);border:1px solid var(--line);border-radius:22px;padding:clamp(18px,3vh,40px) clamp(22px,3vw,56px);box-shadow:0 30px 80px rgba(0,0,0,.35)}
+body.light .fo-card{background:#FFFFFF}
+.fo-card h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3vw,54px);line-height:1.1;margin:8px 0 18px}
+.fo-card ol{margin:0 0 0 1.2em;font-size:clamp(15px,1.5vw,28px);line-height:1.35;color:var(--white)}
+.fo-card ol.two{columns:2;column-gap:4vw}
+.fo-card li{margin:0 0 .5em;break-inside:avoid}
+.m.mlist .btn.on{border-color:var(--gold);color:var(--gold)}
 
 /* ---------- all responses ---------- */
 .all{flex:1;overflow:auto;display:grid;gap:12px;align-content:start;grid-auto-rows:max-content;grid-template-columns:repeat(auto-fill,minmax(var(--min,300px),1fr));padding-right:6px;min-height:0}
@@ -411,7 +421,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
    signed in to several or company Google accounts work normally.
    Opened as a local file without config.js, the page runs in single-device LOCAL mode.
    ===================================================================== */
-const APP_VERSION = 'v2026.11.25-7';
+const APP_VERSION = 'v2026.11.25-8';
 const CONFIG = {
   maxChars: 300,
   minForInsight: 5
@@ -817,7 +827,7 @@ function broadcastScreen() {
   if (ROLE !== 'host' || !T) return;
   const st = S();
   const js = JSON.stringify({ t: 'snap', view: publicView(st), wall: H.wall, demo: H.demo, theme: H.settings.theme || 'dark', purl: participantUrl(), joined: (T && T.joined) || 0,
-    tree: { state: T.tree.state, responses: T.tree.responses, participants: T.tree.participants } });
+    focus: H.focus || null, tree: { state: T.tree.state, responses: T.tree.responses, participants: T.tree.participants } });
   saveScreenInfo(st);
   if (js === lastSnap) return; lastSnap = js;
   screenSend(js);
@@ -825,7 +835,7 @@ function broadcastScreen() {
 let lastScreenSaved = '';
 function saveScreenInfo(st) {
   if (ROLE !== 'host' || H.demo || !realT || realT.kind !== 'gas' || !st.started) return;
-  const info = { sid: st.sid, view: publicView(st), wall: H.wall, theme: H.settings.theme === 'light' ? 'light' : 'dark' };
+  const info = { sid: st.sid, view: publicView(st), wall: H.wall, theme: H.settings.theme === 'light' ? 'light' : 'dark', focus: H.focus || null };
   const js = JSON.stringify(info); if (js === lastScreenSaved) return; lastScreenSaved = js;
   safe(realT.update({ 'state/screen': info }));
 }
@@ -925,6 +935,7 @@ function renderHost() {
   const st = S(), dash = st.started || H.peek;
   $('#opening').classList.toggle('hidden', dash); $('#dash').classList.toggle('hidden', !dash);
   broadcastScreen();
+  if (ROLE === 'screen') renderFocus(st);
   if (!dash) { const m = modeInfo(); $('#openMode').textContent = m.txt + (realT.kind === 'local' && !H.demo ? ' — open the host link from the Google Sheet menu so phones can join' : realT.status === 'error' && !H.demo ? ' — ' + (realT.error || '') : ''); return; }
   if (!st.started && H.view !== 'settings') H.view = 'settings';
   $$('.nav button').forEach(b => b.classList.toggle('act', b.dataset.v === H.view || (H.view === 'all' && b.dataset.v === 'live')));
@@ -1176,25 +1187,51 @@ function groupAnswers(qi, list) {
   return out;
 }
 function showGroup(g, q) {
-  if (ROLE === 'screen') return;
+  const ctl = ROLE === 'host';
   const m = document.createElement('div'); m.className = 'modal';
-  m.innerHTML = `<div class="m mlist" role="dialog" aria-modal="true"><div class="k"></div><h3></h3><ol></ol><div class="rowbtn"><button class="btn gold" data-x="1">CLOSE</button></div></div>`;
+  m.innerHTML = `<div class="m mlist" role="dialog" aria-modal="true"><div class="k"></div><h3></h3><ol></ol><div class="rowbtn">${ctl ? '<button class="btn" data-proj="1">SHOW ON PROJECTOR</button>' : ''}<button class="btn gold" data-x="1">CLOSE</button></div></div>`;
   $('.k', m).textContent = 'QUESTION ' + q.no + ' · ' + g.n + (g.n === 1 ? ' ANSWER' : ' SIMILAR ANSWERS');
   $('h3', m).textContent = g.theme ? g.label : '“' + g.sample + '”';
   const ol = $('ol', m); g.answers.forEach(a => { const li = document.createElement('li'); li.textContent = a; ol.appendChild(li); });
-  m.addEventListener('click', e => { if (e.target === m || e.target.closest('[data-x]')) m.remove(); });
+  const pj = $('[data-proj]', m);
+  const setPj = () => { if (!pj) return; const on = !!(H.focus && H.focus.id === g.id); pj.textContent = on ? 'HIDE FROM PROJECTOR' : 'SHOW ON PROJECTOR'; pj.classList.toggle('on', on); };
+  setPj();
+  const close = () => { m.remove(); if (ctl && H.focus) { H.focus = null; sched(); } };
+  m._close = close;
+  m.addEventListener('click', e => {
+    if (e.target.closest('[data-proj]')) { H.focus = (H.focus && H.focus.id === g.id) ? null : { q: q.key, id: g.id }; setPj(); sched(); return; }
+    if (e.target === m || e.target.closest('[data-x]')) close();
+  });
   document.body.appendChild(m); $('[data-x]', m).focus();
+}
+/* presenter: the group the operator chose with SHOW ON PROJECTOR, shown big */
+function renderFocus(st) {
+  let ov = $('#focusov'), g = null;
+  const f = H.focus, q = st.cur ? QS[st.cur - 1] : null;
+  if (ROLE === 'screen' && f && q && f.q === q.key && H.view === 'live' && st.started) {
+    const all = responses(q.key), cleared = H.wall.cleared[q.key] || 0;
+    const list = all.filter(r => r.ts > cleared && (!H.wall.frozenAt || r.ts <= H.wall.frozenAt));
+    g = groupAnswers(st.cur - 1, list).find(x => x.id === f.id) || null;
+  }
+  if (!g) { if (ov) ov.remove(); return; }
+  if (!ov) { ov = document.createElement('div'); ov.id = 'focusov'; ov.className = 'focusov'; document.body.appendChild(ov); }
+  const sig = g.id + '|' + g.n; if (ov.dataset.sig === sig) return; ov.dataset.sig = sig;
+  ov.innerHTML = '<div class="fo-card"><div class="kicker"></div><h2></h2><ol></ol></div>';
+  $('.kicker', ov).textContent = 'QUESTION ' + q.no + ' · ' + g.n + (g.n === 1 ? ' ANSWER' : ' SIMILAR ANSWERS');
+  $('h2', ov).textContent = g.theme ? g.label : '“' + g.sample + '”';
+  const ol = $('ol', ov); g.answers.forEach(a => { const li = document.createElement('li'); li.textContent = a; ol.appendChild(li); });
+  ol.classList.toggle('two', g.answers.length > 6);
 }
 function layoutBubbles(box, groups) {
   const W = box.clientWidth, Ht = box.clientHeight; if (W < 80 || Ht < 80) return;
-  const MAXB = Math.max(10, Math.min(32, Math.floor(W * Ht / 22000))), top = groups.slice(0, MAXB), more = groups.length - top.length;
+  const MAXB = Math.max(8, Math.min(28, Math.floor(W * Ht / 30000))), top = groups.slice(0, MAXB), more = groups.length - top.length;
   const sig = top.map(g => g.id + ':' + g.n).join('|') + '|' + more + '|' + W + 'x' + Ht;
   if (box.dataset.sig === sig) return; box.dataset.sig = sig;
   box._groups = groups;
   const max = top.length ? top[0].n : 1, base = Math.min(W, Ht);
   let placed = [], scale = 1;
   for (let attempt = 0; attempt < 16; attempt++) {
-    const rMax = base * (top.length > 16 ? 0.25 : 0.3) * scale, rMin = Math.max(24, base * 0.08 * scale);
+    const rMax = base * (top.length > 16 ? 0.25 : 0.3) * scale, rMin = Math.max(46, base * 0.085 * scale);
     placed = []; let miss = 0;
     top.forEach(g => {
       const r = max > 1 ? rMin + (rMax - rMin) * Math.sqrt((g.n - 1) / (max - 1)) : Math.min(rMax, Math.max(rMin, base * 0.15 * scale));
@@ -1224,18 +1261,18 @@ function layoutBubbles(box, groups) {
     el.style.left = (p.x - r) + 'px'; el.style.top = (p.y - r) + 'px'; el.style.width = el.style.height = (2 * r) + 'px';
     el.setAttribute('aria-label', g.n + ' answers: ' + (g.theme ? g.label : g.sample));
     const n = $('.bb-n', el), h = $('.bb-h', el), t = $('.bb-t', el), qd = $('.bb-q', el);
-    n.style.fontSize = Math.max(16, Math.min(92, r * (solo ? 0.24 : 0.4))) + 'px';
+    n.hidden = solo;
+    n.style.fontSize = Math.max(18, Math.min(92, r * 0.42)) + 'px';
     n.innerHTML = ''; n.appendChild(document.createTextNode(String(g.n)));
     if (!solo && r > 64) { const l = document.createElement('div'); l.className = 'bb-l'; l.textContent = 'answers'; l.style.fontSize = Math.max(9, Math.min(14, r * 0.07)) + 'px'; n.appendChild(l); }
-    const showTheme = !!g.theme && !solo, tiny = r < 42;
-    h.hidden = !showTheme || tiny; t.hidden = showTheme || tiny; qd.hidden = !showTheme || r < 92;
-    if (tiny) n.style.fontSize = Math.max(14, r * 0.62) + 'px';
+    const showTheme = !!g.theme && !solo;
+    h.hidden = !showTheme; t.hidden = showTheme; qd.hidden = !showTheme || r < 92;
     if (showTheme) {
       h.textContent = g.label; h.style.fontSize = Math.max(10, Math.min(26, r * 0.11)) + 'px';
       qd.textContent = '“' + g.sample + '”'; qd.style.fontSize = Math.max(11, Math.min(20, r * 0.09)) + 'px';
     } else {
-      t.textContent = g.sample + (g.n > 1 && !g.theme ? '' : ''); t.style.fontSize = Math.max(10, Math.min(22, r * 0.115)) + 'px';
-      t.style.webkitLineClamp = String(r > 130 ? 6 : r > 95 ? 5 : r > 65 ? 4 : r > 52 ? 3 : 2);
+      t.textContent = g.sample; t.style.fontSize = Math.max(12, Math.min(22, r * (solo ? 0.17 : 0.13))) + 'px';
+      t.style.webkitLineClamp = String(r > 120 ? 6 : r > 90 ? 5 : r > 66 ? 4 : 3);
     }
     if (prev[g.id] != null && g.n > prev[g.id]) { el.classList.add('grow'); clearTimeout(el._gt); el._gt = setTimeout(() => el.classList.remove('grow'), 2600); }
   });
@@ -1337,8 +1374,8 @@ const ACT = {
   start() { H.peek = false; H.view = 'question'; safe(T.update({ 'state/started': true, 'state/cur': 0, 'state/closing': false })); },
   peek() { H.peek = true; H.view = 'settings'; sched(); },
   backOpen() { H.peek = false; sched(); },
-  view(el) { const v = el.dataset.v; if (!S().started && v !== 'settings') return toast('Press START SESSION first'); H.view = v; sched(); },
-  go(n) { H.view = 'question'; H.wall.frozenAt = null; H.wall.hidden = false; safe(T.update({ 'state/cur': n, 'state/closing': false })); },
+  view(el) { const v = el.dataset.v; if (!S().started && v !== 'settings') return toast('Press START SESSION first'); H.view = v; H.focus = null; sched(); },
+  go(n) { H.focus = null; H.view = 'question'; H.wall.frozenAt = null; H.wall.hidden = false; safe(T.update({ 'state/cur': n, 'state/closing': false })); },
   prev() { const c = S().cur; if (c > 0) ACT.go(c - 1); },
   next() { const c = S().cur; if (c < 3) ACT.go(c + 1); },
   activate() { const st = S(); if (!st.cur) return; const m = {}; QS.forEach(q => { if (q.key !== curKey() && ['open', 'paused'].includes(st.q[q.key].status)) m['state/q/' + q.key + '/status'] = 'closed'; }); m['state/q/' + curKey() + '/status'] = 'open'; H.wall.frozenAt = null; safe(T.update(m)); toast('Question ' + st.cur + ' is open'); },
@@ -1388,14 +1425,14 @@ function bootHost() {
   document.addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (b && !b.disabled && ACT[b.dataset.act]) ACT[b.dataset.act](b); });
   document.addEventListener('keydown', e => {
     if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || e.metaKey || e.ctrlKey || e.altKey) return;
-    if (e.key === 'Escape') { $$('.modal').forEach(m => m.remove()); return; }
+    if (e.key === 'Escape') { $$('.modal').forEach(m => m._close ? m._close() : m.remove()); return; }
     if ($('.modal')) return;
     const k = e.key.toLowerCase();
     if (k === 'f') return ACT.fullscreen();
     if (k === 't') return ACT.theme({ dataset: { t: 'toggle' } });
     if (!S().started) return;
     const map = { '0': 'overview', '1': 'question', '2': 'live', '3': 'all', '4': 'cloud', '5': 'top5', '6': 'insights' };
-    if (map[k]) { H.view = map[k]; sched(); }
+    if (map[k]) { H.view = map[k]; H.focus = null; sched(); }
     else if (k === 'arrowright') ACT.next(); else if (k === 'arrowleft') ACT.prev();
     else if (k === 'a') { const s = S(); if (s.cur && s.q[curKey()].status !== 'open') ACT.activate(); }
     else if (k === 'p') { const s = S(); if (s.cur) { const x = s.q[curKey()].status; if (x === 'open') ACT.pause(); else if (x === 'paused') ACT.resume(); } }
@@ -1447,7 +1484,7 @@ function bootScreen() {
   const applySnap = m => {
     T = realT = mem;
     mem.tree = m.tree || mem.tree; mem.joined = +m.joined || 0;
-    H.view = m.view || 'question'; H.wall = m.wall || H.wall; H.demo = !!m.demo; SCREEN_PURL = m.purl || '';
+    H.view = m.view || 'question'; H.wall = m.wall || H.wall; H.demo = !!m.demo; H.focus = m.focus || null; SCREEN_PURL = m.purl || '';
     setTheme(m.theme); sched();
   };
   /* source 2: the shared session in the Google Sheet (works even if the windows cannot talk) */
@@ -1456,7 +1493,7 @@ function bootScreen() {
     T = realT = gas; H.demo = false;
     SCREEN_PURL = H.settings.baseUrl || (location.origin + location.pathname);
     const st = gas.tree.state || {}, sc = st.screen || null;
-    if (sc) { H.view = sc.view || 'question'; H.wall = sc.wall || { frozenAt: null, hidden: false, cleared: {} }; setTheme(sc.theme); }
+    if (sc) { H.view = sc.view || 'question'; H.wall = sc.wall || { frozenAt: null, hidden: false, cleared: {} }; H.focus = sc.focus || null; setTheme(sc.theme); }
     else if (!st.started) H.view = 'opening';
     return true;
   };
