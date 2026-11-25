@@ -141,7 +141,7 @@ body.idle{cursor:none}
 
 /* ---------- grouped bubbles (live responses, Slido-style) ---------- */
 .bub{flex:1;position:relative;min-height:0}
-.bb{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;color:var(--white);
+.bb{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;color:#FBF7EC;
   background:radial-gradient(circle at 34% 28%,#7A2E20,#4D1E16 70%);border:1px solid rgba(249,90,68,.35);box-shadow:0 18px 50px rgba(0,0,0,.35);
   transition:left .9s cubic-bezier(.2,.8,.2,1),top .9s cubic-bezier(.2,.8,.2,1),width .9s cubic-bezier(.2,.8,.2,1),height .9s cubic-bezier(.2,.8,.2,1),box-shadow .8s,border-color .4s;
   animation:bpop .8s cubic-bezier(.2,.8,.2,1) both,drift var(--d,9s) ease-in-out var(--dl,0s) infinite alternate}
@@ -151,7 +151,7 @@ body.idle{cursor:none}
 .bb.solo{background:radial-gradient(circle at 34% 28%,rgba(77,30,22,.95),rgba(48,18,12,.95) 70%);border-color:rgba(212,196,180,.18)}
 .bb.grow{box-shadow:0 0 0 4px rgba(249,90,68,.55),0 20px 70px rgba(249,90,68,.35)}
 .bb-in{width:76%;max-height:80%;display:flex;flex-direction:column;align-items:center;gap:.3em;overflow:hidden;pointer-events:none}
-.bb-n{font-family:var(--serif);font-weight:600;line-height:.85;color:var(--gold)}
+.bb-n{font-family:var(--serif);font-weight:600;line-height:.85;color:#FF8A72}
 .bb.r0 .bb-n{color:#2B100A}
 .bb-l{font-size:.62em;letter-spacing:.2em;text-transform:uppercase;font-weight:700;opacity:.75;font-family:var(--sans)}
 .bb-h{font-weight:800;letter-spacing:.07em;text-transform:uppercase;line-height:1.15}
@@ -163,6 +163,48 @@ body.idle{cursor:none}
 .m.mlist .k{font-size:11px;letter-spacing:.24em;color:var(--gold);font-weight:700;text-transform:uppercase}
 .m.mlist ol{margin:16px 0 0 22px;color:var(--white);font-size:16px;line-height:1.45}
 .m.mlist li{margin:8px 0;padding-left:4px}
+
+/* ---------- presenter screen (?view=screen): content only, no menus ---------- */
+body.display .top,body.display .ctrl{display:none!important}
+body.display .host{grid-template-rows:1fr}
+body.display .opening .go,body.display .opening .links,body.display #openMode{display:none!important}
+body.display .qr .btn,body.display .qr .warn{display:none!important}
+body.display .bb{cursor:default}
+body.display.nocursor,body.display.nocursor *{cursor:none!important}
+.fshint{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:70;display:flex;gap:14px;align-items:center;padding:12px 20px;border-radius:999px;background:var(--goldbg);color:#2B100A;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 10px 40px rgba(0,0,0,.35);max-width:calc(100vw - 32px)}
+.fshint b{letter-spacing:.22em;font-size:11px;white-space:nowrap}
+.scrwait{position:fixed;inset:0;z-index:65;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;background:var(--bg);color:var(--mute)}
+.scrwait .t{font-family:var(--serif);font-size:clamp(26px,3vw,48px);color:var(--white)}
+.top .btn.scr{padding:8px 12px;font-size:10.5px}
+
+/* ---------- light (cream) background for the host & presenter screens ---------- */
+body.light{--bg:#FBF7EC;--navy:#FFFFFF;--char:#F3EADB;--white:#2B2A29;--mute:#6B6461;--gold:#C2412C;--goldbg:#F95A44;--gold2:#E0452F;--line:rgba(96,38,28,.22);--line2:#E0DBD0;color-scheme:light;background:var(--bg);color:var(--white)}
+body.light .bgfx{background:radial-gradient(1100px 700px at 12% -10%,rgba(249,90,68,.10),transparent 60%),radial-gradient(900px 700px at 100% 110%,rgba(96,38,28,.08),transparent 60%),var(--bg)}
+body.light #sparks{opacity:.4}
+body.light .opening h1{background:linear-gradient(180deg,#60261C 35%,#B93A27 100%);-webkit-background-clip:text;background-clip:text}
+body.light .top,body.light .ctrl{background:rgba(251,247,236,.94)}
+body.light .btn{background:#FFFFFF}
+body.light .btn.ghost{background:transparent}
+body.light .btn.gold{background:var(--goldbg);color:#2B100A}
+body.light .btn.gold:hover{background:#FF7A62}
+body.light .btn:disabled{color:#2B2A29}
+body.light .card,body.light .qr,body.light .panel,body.light .kpi,body.light .box{background:#FFFFFF;border-color:#E0DBD0}
+body.light .card{box-shadow:0 8px 30px rgba(96,38,28,.08)}
+body.light .field input{background:#FFFFFF;color:#2B2A29}
+body.light .box code,body.light kbd,body.light .box pre{background:#F3EADB;color:#B93A27}
+body.light .modal .m{background:#FFFFFF}
+body.light .wallmsg{background:rgba(251,247,236,.94)}
+body.light .bar{background:rgba(96,38,28,.1)}
+body.light .wm{background:#FFFFFF}
+body.light .chip.live{color:#2E7D4F;border-color:rgba(46,125,79,.45)}
+body.light .chip.warn{color:#8A5A00;border-color:rgba(138,90,0,.45)}
+body.light .note.bad{color:#8A5A00;border-color:#C28A1E}
+body.light .note.ok{color:#2E7D4F;border-color:#2E7D4F}
+body.light .qr .warn{color:#8A5A00}
+body.light .refl{background:linear-gradient(90deg,rgba(249,90,68,.12),rgba(249,90,68,.03))}
+body.light .bb{box-shadow:0 14px 40px rgba(96,38,28,.22)}
+body.light .bb.solo{background:radial-gradient(circle at 34% 28%,#8A3A2A,#60261C 70%);border-color:rgba(96,38,28,.3)}
+body.light .bb.r0{color:#2B100A}
 
 /* ---------- all responses ---------- */
 .all{flex:1;overflow:auto;display:grid;gap:12px;align-content:start;grid-auto-rows:max-content;grid-template-columns:repeat(auto-fill,minmax(var(--min,300px),1fr));padding-right:6px;min-height:0}
@@ -736,7 +778,25 @@ const H = {
 };
 const S = () => getState(T.tree);
 let raf = 0; const sched = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(); }); };
-function render() { if (ROLE === 'host') renderHost(); else renderParticipant(); }
+function render() { if (ROLE === 'participant') renderParticipant(); else renderHost(); }
+/* ---------- control screen <-> presenter screen (same browser) ---------- */
+const SCREEN_BC = (typeof BroadcastChannel === 'function') ? new BroadcastChannel('lv-presenter-screen') : null;
+let SCREEN_PURL = '', lastSnap = '';
+function applyTheme(t) { document.body.classList.toggle('light', t === 'light'); }
+function publicView(st) {
+  if (!st.started) return 'opening';
+  if (H.view === 'settings' || H.view === 'overview') return H.lastPublic || 'question';
+  H.lastPublic = H.view; return H.view;
+}
+function broadcastScreen() {
+  if (!SCREEN_BC || ROLE !== 'host' || !T) return;
+  const st = S();
+  const js = JSON.stringify({ t: 'snap', view: publicView(st), wall: H.wall, demo: H.demo, theme: H.settings.theme || 'dark', purl: participantUrl(), joined: (T && T.joined) || 0,
+    tree: { state: T.tree.state, responses: T.tree.responses, participants: T.tree.participants } });
+  if (js === lastSnap) return; lastSnap = js;
+  try { SCREEN_BC.postMessage(js); } catch (e) {}
+}
+const screenOn = () => Date.now() - (H.screenSeen || 0) < 8000;
 
 function responses(key) {
   const o = (T.tree.responses && T.tree.responses[key]) || {}, ep = S().q[key].epoch;
@@ -759,6 +819,7 @@ function analysis(qi) {
 }
 function gasInfo() { return realT && realT.kind === 'gas' ? realT.info : null; }
 function participantUrl() {
+  if (ROLE === 'screen') return SCREEN_PURL;
   if (H.settings.baseUrl) return String(H.settings.baseUrl).trim();
   if (!GAS) return location.href.split('#')[0] + '#join';
   if (!/^https?:$/.test(location.protocol)) { const i = gasInfo(); return (i && i.pagesUrl) || ''; }
@@ -816,13 +877,13 @@ function buildHost() {
     <div class="q1">“Your voice matters.”</div>
     <div class="q2">Take a moment to reflect on what leadership means to you.</div>
     <div class="go"><button class="btn gold big" data-act="start">START SESSION</button></div>
-    <div class="links"><button class="link" data-act="demoStart">Try demo mode</button><button class="link" data-act="peek">Settings &amp; go-live setup</button><button class="link" data-act="fullscreen">Fullscreen</button></div>
+    <div class="links"><button class="link" data-act="demoStart">Try demo mode</button><button class="link" data-act="peek">Settings &amp; go-live setup</button><button class="link" data-act="openScreen">Open presenter screen</button><button class="link" data-act="theme" data-t="toggle">Background: dark / light</button><button class="link" data-act="fullscreen">Fullscreen</button></div>
     <div class="q2" id="openMode" style="margin-top:2.4vh;font-size:11px;letter-spacing:.2em;animation-delay:1.8s"></div>
   </section>
   <section id="dash" class="host hidden">
     <header class="top"><div class="brand">LEADERSHIP <b>VOICE</b></div>
       <nav class="nav" aria-label="Host navigation">${NAV.map(([v, l]) => `<button data-act="view" data-v="${v}">${l}</button>`).join('')}</nav>
-      <div class="chips" id="chips"></div></header>
+      <div class="chips" id="chips"></div><button class="btn scr" data-act="openScreen" title="Opens the projector window (no menus)">PRESENTER SCREEN</button></header>
     <main class="stage" id="stage"></main>
     <footer class="ctrl" id="ctrl"></footer>
   </section>`;
@@ -830,13 +891,15 @@ function buildHost() {
 function renderHost() {
   const st = S(), dash = st.started || H.peek;
   $('#opening').classList.toggle('hidden', dash); $('#dash').classList.toggle('hidden', !dash);
+  broadcastScreen();
   if (!dash) { const m = modeInfo(); $('#openMode').textContent = m.txt + (realT.kind === 'local' && !H.demo ? ' — open the host link from the Google Sheet menu so phones can join' : realT.status === 'error' && !H.demo ? ' — ' + (realT.error || '') : ''); return; }
   if (!st.started && H.view !== 'settings') H.view = 'settings';
   $$('.nav button').forEach(b => b.classList.toggle('act', b.dataset.v === H.view || (H.view === 'all' && b.dataset.v === 'live')));
   const m = modeInfo(), n = totalResponses(), p = participantCount();
   setHtml($('#chips'), `<span class="chip ${m.cls}">${m.dot ? `<i class="dot ${m.pulse ? 'pulse' : ''}"></i>` : ''}${m.txt}</span>
     <span class="chip opt2">PROGRESS <b>${st.closing ? 'CLOSING' : st.cur ? 'Q' + st.cur + '/3' : 'OPENING'}</b></span>
-    <span class="chip">RESPONSES <b id="chipN">${n}</b></span><span class="chip opt">PARTICIPANTS <b>${p}</b></span>`);
+    <span class="chip">RESPONSES <b id="chipN">${n}</b></span><span class="chip opt">PARTICIPANTS <b>${p}</b></span>
+    ${ROLE === 'host' ? `<span class="chip ${screenOn() ? 'live' : ''}" title="What the projector shows">ON SCREEN <b>${screenOn() ? esc((NAV.find(x => x[0] === publicView(st)) || [0, publicView(st) === 'all' ? 'ALL RESPONSES' : publicView(st).toUpperCase()])[1]) : 'NOT OPEN'}</b></span>` : ''}`);
   renderCtrl(st); renderStage(st);
 }
 function setHtml(el, html) { if (el._h !== html) { el.innerHTML = html; el._h = html; return true; } return false; }
@@ -999,6 +1062,14 @@ const VIEWS = {
             <li>Setelah acara: di Google Sheet pilih <i>File › Download › Microsoft Excel</i> lalu simpan ke folder Anda.</li>
           </ol></div>
       </div>
+      <div class="box" style="margin-bottom:16px"><h4>PRESENTER SCREEN (PROJECTOR) &amp; BACKGROUND</h4><div class="note" id="setScr"></div>
+        <ol>
+          <li>Sambungkan proyektor / monitor sebagai <b>Extend</b> (Windows: tekan <kbd>Win</kbd>+<kbd>P</kbd> › Extend).</li>
+          <li>Klik <b>OPEN PRESENTER SCREEN</b>. Jendela baru terbuka — geser ke layar proyektor, lalu klik sekali di dalamnya (atau tekan <kbd>F</kbd>) untuk layar penuh.</li>
+          <li>Kendalikan semuanya dari halaman ini di laptop. Proyektor hanya menampilkan konten, tanpa menu; Settings &amp; Overview tidak pernah tampil di proyektor.</li>
+        </ol>
+        <div class="rowbtn"><button class="btn gold" data-act="openScreen">OPEN PRESENTER SCREEN</button><span class="sep" style="width:1px;background:var(--line2);margin:0 6px"></span>
+          <button class="btn" data-act="theme" data-t="dark" id="thDark">BACKGROUND · DARK MAHOGANY</button><button class="btn" data-act="theme" data-t="light" id="thLight">BACKGROUND · LIGHT CREAM</button></div></div>
       <div class="grid2">
         <div class="box"><h4>DEMO MODE</h4><div class="note" id="setDemo"></div>
           <div class="rowbtn"><button class="btn gold" data-act="demoStart">START DEMO</button><button class="btn" data-act="demoStop">STOP DEMO</button><button class="btn" data-act="demoFill">LOAD ALL SAMPLE RESPONSES</button></div>
@@ -1018,6 +1089,8 @@ const VIEWS = {
     const i = gasInfo(), rows = [];
     if (i) { rows.push(['Participant link', participantUrl() || '(not set)']); if (i.sheetUrl) rows.push(['Google Sheet', i.sheetUrl]); }
     setHtml($('#setKv'), rows.map(r => `<span>${esc(r[0])}</span><span>${/^https:\/\//.test(r[1]) ? `<a href="${esc(r[1])}" target="_blank" rel="noopener" style="color:var(--gold2)">${esc(r[1])}</a>` : esc(r[1])}</span>`).join(''));
+    const sc = $('#setScr'); sc.className = 'note' + (screenOn() ? ' ok' : ''); sc.textContent = screenOn() ? 'Presenter screen is open and following this control screen.' : (SCREEN_BC ? 'Presenter screen is not open yet.' : 'This browser cannot link two windows. Use Chrome or Edge.');
+    $('#thDark').classList.toggle('on', (H.settings.theme || 'dark') !== 'light'); $('#thLight').classList.toggle('on', H.settings.theme === 'light');
     $('#setDemo').textContent = H.demo ? (H.demoRun ? 'Demo is running. Activate a question to watch sample responses arrive.' : 'Demo is paused (sample data still on screen).') : 'Demo is off. You are looking at the real session.';
     return built;
   },
@@ -1070,6 +1143,7 @@ function groupAnswers(qi, list) {
   return out;
 }
 function showGroup(g, q) {
+  if (ROLE === 'screen') return;
   const m = document.createElement('div'); m.className = 'modal';
   m.innerHTML = `<div class="m mlist" role="dialog" aria-modal="true"><div class="k"></div><h3></h3><ol></ol><div class="rowbtn"><button class="btn gold" data-x="1">CLOSE</button></div></div>`;
   $('.k', m).textContent = 'QUESTION ' + q.no + ' · ' + g.n + (g.n === 1 ? ' ANSWER' : ' SIMILAR ANSWERS');
@@ -1165,13 +1239,14 @@ function layoutCloud(box, words, sig) {
     });
     if (!miss) break; maxF *= 0.86;
   }
-  const colors = ['#FBF7EC', '#FF9C86', '#CDB8AA', '#FBF7EC', '#F95A44'], seen = new Set();
+  const LIGHT = document.body.classList.contains('light');
+  const colors = LIGHT ? ['#2B2A29', '#B93A27', '#6B6461', '#60261C', '#D8432E'] : ['#FBF7EC', '#FF9C86', '#CDB8AA', '#FBF7EC', '#F95A44'], seen = new Set();
   const spans = {}; $$('span', box).forEach(s => spans[s.dataset.w] = s);
   placed.forEach(p => {
     const id = p.word.w; seen.add(id); let s = spans[id];
     if (!s) { s = document.createElement('span'); s.dataset.w = id; s.textContent = p.word.label; s.style.left = (W / 2) + 'px'; s.style.top = (Ht / 2) + 'px'; s.style.fontSize = '10px'; box.appendChild(s); s.getBoundingClientRect(); }
     s.style.left = (p.x + p.f * 0.25) + 'px'; s.style.top = (p.y + p.f * 0.06) + 'px'; s.style.fontSize = p.f + 'px';
-    s.style.color = p.i < 3 ? '#F95A44' : colors[p.i % colors.length]; s.style.opacity = p.i < 3 ? 1 : Math.max(0.62, 1 - p.i * 0.012);
+    s.style.color = p.i < 3 ? (LIGHT ? '#D8432E' : '#F95A44') : colors[p.i % colors.length]; s.style.opacity = p.i < 3 ? 1 : Math.max(0.62, 1 - p.i * 0.012);
     s.title = p.word.c + ' response' + (p.word.c === 1 ? '' : 's');
   });
   Object.keys(spans).forEach(id => { if (!seen.has(id)) { spans[id].style.opacity = 0; setTimeout(() => spans[id].remove(), 900); } });
@@ -1244,6 +1319,15 @@ const ACT = {
   freeze() { H.wall.frozenAt = H.wall.frozenAt ? null : Date.now(); sched(); },
   hide() { H.wall.hidden = !H.wall.hidden; sched(); },
   clear() { H.wall.cleared[curKey()] = Date.now(); toast('Screen cleared · no data deleted'); sched(); },
+  openScreen() {
+    const w = window.open(location.pathname + '?view=screen', 'lv-presenter-screen', 'popup=yes,width=1280,height=720');
+    if (!w) toast('Allow pop-ups for this site to open the presenter screen'); else { lastSnap = ''; setTimeout(broadcastScreen, 600); }
+  },
+  theme(el) {
+    const t = el.dataset.t === 'toggle' ? (H.settings.theme === 'light' ? 'dark' : 'light') : el.dataset.t;
+    H.settings.theme = t === 'light' ? 'light' : 'dark'; ls.set('lv:host:settings', H.settings); applyTheme(H.settings.theme);
+    const st = stage(); if (st) st.dataset.key = ''; H.nonce++; toast(t === 'light' ? 'Light cream background' : 'Dark mahogany background'); sched();
+  },
   copy() { const u = participantUrl(); if (!u) return toast('The participant link is not ready yet'); copyText(u); },
   saveSettings() { H.settings.expected = $('#setExp').value.trim(); H.settings.baseUrl = $('#setBase').value.trim(); ls.set('lv:host:settings', H.settings); H.nonce++; toast('Settings saved'); sched(); },
   demoStart() { H.demo = true; H.demoRun = true; T = demoT; H.peek = false; const st = S(); if (!st.started) { H.view = 'question'; demoT.update({ 'state/started': true }); } toast('Demo mode · sample data'); stage() && (stage().dataset.key = ''); sched(); },
@@ -1256,7 +1340,14 @@ const ACT = {
 };
 
 function bootHost() {
-  buildHost(); connectReal();
+  buildHost(); connectReal(); applyTheme(H.settings.theme);
+  if (SCREEN_BC) SCREEN_BC.onmessage = e => {
+    let m; try { m = JSON.parse(e.data); } catch (x) { return; }
+    if (!m) return;
+    if (m.t === 'hello') { H.screenSeen = Date.now(); lastSnap = ''; broadcastScreen(); sched(); }
+    else if (m.t === 'ping') { const was = screenOn(); H.screenSeen = Date.now(); try { SCREEN_BC.postMessage(JSON.stringify({ t: 'alive' })); } catch (x) {} if (!was) sched(); }
+  };
+  setInterval(() => { if (H.screenSeen && !screenOn()) { H.screenSeen = 0; sched(); } }, 4000);
   demoT.onChange = sched;
   document.addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (b && !b.disabled && ACT[b.dataset.act]) ACT[b.dataset.act](b); });
   document.addEventListener('keydown', e => {
@@ -1265,6 +1356,7 @@ function bootHost() {
     if ($('.modal')) return;
     const k = e.key.toLowerCase();
     if (k === 'f') return ACT.fullscreen();
+    if (k === 't') return ACT.theme({ dataset: { t: 'toggle' } });
     if (!S().started) return;
     const map = { '0': 'overview', '1': 'question', '2': 'live', '3': 'all', '4': 'cloud', '5': 'top5', '6': 'insights' };
     if (map[k]) { H.view = map[k]; sched(); }
@@ -1275,6 +1367,49 @@ function bootHost() {
   });
   let idleT; const wake = () => { document.body.classList.remove('idle'); clearTimeout(idleT); if (document.fullscreenElement && !['settings', 'overview'].includes(H.view)) idleT = setTimeout(() => document.body.classList.add('idle'), 3500); };
   ['mousemove', 'keydown', 'click', 'fullscreenchange'].forEach(ev => document.addEventListener(ev, wake));
+  window.addEventListener('resize', sched);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { const c = $('#cloud'); if (c) c.dataset.sig = ''; sched(); });
+  sched();
+}
+
+/* =====================================================================
+   PRESENTER SCREEN (?view=screen) — content only, follows the control screen
+   ===================================================================== */
+function bootScreen() {
+  document.body.classList.add('display');
+  T = realT = new MemoryT(); realT.kind = 'screen';
+  applyTheme((ls.get('lv:host:settings', {}) || {}).theme);
+  buildHost();
+  const hint = document.createElement('div'); hint.className = 'fshint';
+  hint.innerHTML = '<b>PRESENTER SCREEN</b><span>Drag this window to the projector, then click here (or press F) for full screen.</span>';
+  const wait = document.createElement('div'); wait.className = 'scrwait';
+  wait.innerHTML = '<div class="kicker">PRESENTER SCREEN</div><div class="t">Waiting for the control screen…</div><div>Keep the host control page open in this same browser on this laptop.</div>';
+  document.body.appendChild(wait); document.body.appendChild(hint);
+  const fs = () => { const d = document; if (!d.fullscreenElement && d.documentElement.requestFullscreen) d.documentElement.requestFullscreen().catch(() => {}); };
+  hint.addEventListener('click', fs); document.addEventListener('dblclick', fs);
+  document.addEventListener('keydown', e => { if (e.key && e.key.toLowerCase() === 'f') fs(); });
+  document.addEventListener('fullscreenchange', () => { hint.hidden = !!document.fullscreenElement; });
+  let it; const wake = () => { document.body.classList.remove('nocursor'); clearTimeout(it); it = setTimeout(() => document.body.classList.add('nocursor'), 2500); };
+  ['mousemove', 'mousedown'].forEach(ev => document.addEventListener(ev, wake)); wake();
+  let lastAlive = 0;
+  const applySnap = m => {
+    const theme = m.theme === 'light' ? 'light' : 'dark', changed = (H.settings.theme || 'dark') !== theme;
+    T.tree = m.tree || T.tree; T.joined = +m.joined || 0;
+    H.view = m.view || 'question'; H.wall = m.wall || H.wall; H.demo = !!m.demo; SCREEN_PURL = m.purl || '';
+    if (changed) { H.settings.theme = theme; applyTheme(theme); const st = stage(); if (st) st.dataset.key = ''; }
+    sched();
+  };
+  if (SCREEN_BC) {
+    SCREEN_BC.onmessage = e => {
+      let m; try { m = JSON.parse(e.data); } catch (x) { return; }
+      if (!m) return;
+      if (m.t === 'snap' || m.t === 'alive') { lastAlive = Date.now(); wait.hidden = true; }
+      if (m.t === 'snap') applySnap(m);
+    };
+    const hello = () => { try { SCREEN_BC.postMessage(JSON.stringify({ t: 'hello' })); } catch (x) {} };
+    hello();
+    setInterval(() => { try { SCREEN_BC.postMessage(JSON.stringify({ t: 'ping' })); } catch (x) {} if (Date.now() - lastAlive > 9000) { if (wait.hidden) hello(); wait.hidden = false; } }, 3000);
+  } else wait.querySelector('.t').textContent = 'This browser cannot link two windows. Use Chrome or Edge.';
   window.addEventListener('resize', sched);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { const c = $('#cloud'); if (c) c.dataset.sig = ''; sched(); });
   sched();
@@ -1356,9 +1491,10 @@ function renderParticipant() {
 
 {
   const p = new URLSearchParams(location.search);
-  if (GAS) { ROLE = p.get('view') === 'host' ? 'host' : 'participant'; HOSTKEY = String(p.get('key') || ''); }
+  if (p.get('view') === 'screen') ROLE = 'screen';
+  else if (GAS) { ROLE = p.get('view') === 'host' ? 'host' : 'participant'; HOSTKEY = String(p.get('key') || ''); }
   else ROLE = /^#join$/i.test(location.hash) ? 'participant' : 'host';
-  if (ROLE === 'host') bootHost(); else bootParticipant();
+  if (ROLE === 'host') bootHost(); else if (ROLE === 'screen') bootScreen(); else bootParticipant();
 }
 
 </script>
