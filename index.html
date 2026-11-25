@@ -164,6 +164,15 @@ body.idle{cursor:none}
 .m.mlist ol{margin:16px 0 0 22px;color:var(--white);font-size:16px;line-height:1.45}
 .m.mlist li{margin:8px 0;padding-left:4px}
 
+/* ---------- control screen: fit any laptop width (wrap instead of cutting) ---------- */
+.host{grid-template-columns:minmax(0,1fr)}
+.top{flex-wrap:wrap;row-gap:6px;padding:8px 18px}
+.top .nav{flex:1 1 auto;flex-wrap:wrap;justify-content:flex-start;min-width:0}
+.top .chips{flex-wrap:wrap;justify-content:flex-end;margin-left:auto;row-gap:6px}
+.ctrl{row-gap:8px}
+.ctrl .grow{min-width:8px}
+.stage,.view{min-width:0}
+
 /* ---------- presenter screen (?view=screen): content only, no menus ---------- */
 body.display .top,body.display .ctrl{display:none!important}
 body.display .host{grid-template-rows:1fr}
@@ -397,7 +406,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
    signed in to several or company Google accounts work normally.
    Opened as a local file without config.js, the page runs in single-device LOCAL mode.
    ===================================================================== */
-const APP_VERSION = 'v2026.11.25-3';
+const APP_VERSION = 'v2026.11.25-4';
 const CONFIG = {
   maxChars: 300,
   minForInsight: 5
@@ -856,7 +865,7 @@ function connectReal() {
 function modeInfo() {
   if (H.demo) return { cls: 'demo', txt: H.demoRun ? 'DEMO MODE · SAMPLE DATA' : 'DEMO MODE · PAUSED', dot: true };
   if (realT.kind === 'gas') {
-    if (realT.status === 'live') return { cls: 'live', txt: 'LIVE · SAVING TO GOOGLE SHEET', dot: true, pulse: true };
+    if (realT.status === 'live') return { cls: 'live', txt: 'LIVE · SAVING', dot: true, pulse: true };
     if (realT.status === 'connecting') return { cls: 'warn', txt: 'CONNECTING…' };
     return { cls: 'warn', txt: 'CONNECTION PROBLEM' };
   }
@@ -1360,6 +1369,7 @@ const ACT = {
 
 function bootHost() {
   buildHost(); connectReal(); applyTheme(H.settings.theme);
+  if (GAS && HOSTKEY) ls.set('lv:host:key', HOSTKEY);
   const ctlMsg = (data, src) => {
     const m = parseScreenMsg(data); if (!m) return;
     if (src && (m.t === 'hello' || m.t === 'ping')) screenWin = src;
@@ -1399,6 +1409,7 @@ function bootHost() {
 function bootScreen() {
   document.body.classList.add('display');
   const mem = new MemoryT(); mem.kind = 'screen';
+  if (!HOSTKEY) HOSTKEY = String(ls.get('lv:host:key', '') || '');
   const gas = (GAS && HOSTKEY) ? new GasT('host', HOSTKEY) : null;   // reads the session from the Google Sheet
   T = realT = mem;
   applyTheme((ls.get('lv:host:settings', {}) || {}).theme);
@@ -1406,7 +1417,7 @@ function bootScreen() {
   const hint = document.createElement('div'); hint.className = 'fshint';
   hint.innerHTML = '<b>PRESENTER SCREEN</b><span>Drag this window to the projector, then click here (or press F) for full screen.</span>';
   const wait = document.createElement('div'); wait.className = 'scrwait';
-  wait.innerHTML = '<div class="kicker">PRESENTER SCREEN</div><div class="t">Waiting for the control screen…</div><div class="w2">Open it with the PRESENTER SCREEN button on the control screen (press Ctrl+F5 there first).</div><div style="font-size:11px;opacity:.6">' + APP_VERSION + '</div>';
+  wait.innerHTML = '<div class="kicker">PRESENTER SCREEN</div><div class="t">Waiting for the control screen…</div><div class="w2">Open it with the PRESENTER SCREEN button on the control screen (press Ctrl+F5 there first).</div><div class="w3" style="font-size:12px;opacity:.75;max-width:70ch;line-height:1.6"></div><div style="font-size:11px;opacity:.6">' + APP_VERSION + '</div>';
   document.body.appendChild(wait); document.body.appendChild(hint);
   const fs = () => { const d = document; if (!d.fullscreenElement && d.documentElement.requestFullscreen) d.documentElement.requestFullscreen().catch(() => {}); };
   hint.addEventListener('click', fs); document.addEventListener('dblclick', fs);
@@ -1424,6 +1435,8 @@ function bootScreen() {
     const gasOk = gas && gas._first && gas.status === 'live';
     wait.hidden = localAlive() || !!gasOk;
     if (!wait.hidden && gas && gas.status === 'error') wait.querySelector('.w2').textContent = gas.error || 'Cannot reach the Google Sheet.';
+    if (!wait.hidden) wait.querySelector('.w3').textContent = 'Check: direct link ' + (window.opener ? 'opener found, no answer yet' : 'no opener window') + (SCREEN_BC ? '' : ', no channel') +
+      ' · Google Sheet ' + (!GAS ? 'config.js has no Apps Script URL' : !HOSTKEY ? 'no host key (open the control screen once with its host link)' : !gas ? '-' : gas.status === 'live' ? 'connected' : gas.status === 'error' ? 'error' : 'connecting…');
   };
   /* source 1: direct link from the control window (instant; also carries demo data) */
   const applySnap = m => {
