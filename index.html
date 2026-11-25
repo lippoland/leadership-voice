@@ -173,6 +173,10 @@ body.idle{cursor:none}
 .ctrl .grow{min-width:8px}
 .stage,.view{min-width:0}
 
+/* QR panel: QR code only (no link text, no copy button); the link stays in Settings */
+.qr .url,.qr .btn[data-act="copy"]{display:none!important}
+.qr .code{width:min(100%,54vh)}
+
 /* ---------- presenter screen (?view=screen): content only, no menus ---------- */
 body.display .top,body.display .ctrl{display:none!important}
 body.display .host{grid-template-rows:1fr}
@@ -406,7 +410,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
    signed in to several or company Google accounts work normally.
    Opened as a local file without config.js, the page runs in single-device LOCAL mode.
    ===================================================================== */
-const APP_VERSION = 'v2026.11.25-4';
+const APP_VERSION = 'v2026.11.25-5';
 const CONFIG = {
   maxChars: 300,
   minForInsight: 5
