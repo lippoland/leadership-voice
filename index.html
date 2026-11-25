@@ -781,7 +781,17 @@ let raf = 0; const sched = () => { if (!raf) raf = requestAnimationFrame(() => {
 function render() { if (ROLE === 'participant') renderParticipant(); else renderHost(); }
 /* ---------- control screen <-> presenter screen (same browser) ---------- */
 const SCREEN_BC = (typeof BroadcastChannel === 'function') ? new BroadcastChannel('lv-presenter-screen') : null;
-let SCREEN_PURL = '', lastSnap = '';
+let SCREEN_PURL = '', lastSnap = '', screenWin = null;
+/* send to the other window: BroadcastChannel (same browser) + direct postMessage (popup <-> opener) */
+function screenSend(js) {
+  if (SCREEN_BC) { try { SCREEN_BC.postMessage(js); } catch (e) {} }
+  const peer = ROLE === 'screen' ? window.opener : screenWin;
+  if (peer && !peer.closed) { try { peer.postMessage(js, '*'); } catch (e) {} }
+}
+function parseScreenMsg(data) {
+  if (typeof data !== 'string' || data.indexOf('"t":') < 0) return null;
+  try { const m = JSON.parse(data); return m && typeof m === 'object' && typeof m.t === 'string' ? m : null; } catch (e) { return null; }
+}
 function applyTheme(t) { document.body.classList.toggle('light', t === 'light'); }
 function publicView(st) {
   if (!st.started) return 'opening';
@@ -789,12 +799,12 @@ function publicView(st) {
   H.lastPublic = H.view; return H.view;
 }
 function broadcastScreen() {
-  if (!SCREEN_BC || ROLE !== 'host' || !T) return;
+  if (ROLE !== 'host' || !T) return;
   const st = S();
   const js = JSON.stringify({ t: 'snap', view: publicView(st), wall: H.wall, demo: H.demo, theme: H.settings.theme || 'dark', purl: participantUrl(), joined: (T && T.joined) || 0,
     tree: { state: T.tree.state, responses: T.tree.responses, participants: T.tree.participants } });
   if (js === lastSnap) return; lastSnap = js;
-  try { SCREEN_BC.postMessage(js); } catch (e) {}
+  screenSend(js);
 }
 const screenOn = () => Date.now() - (H.screenSeen || 0) < 8000;
 
@@ -1089,7 +1099,7 @@ const VIEWS = {
     const i = gasInfo(), rows = [];
     if (i) { rows.push(['Participant link', participantUrl() || '(not set)']); if (i.sheetUrl) rows.push(['Google Sheet', i.sheetUrl]); }
     setHtml($('#setKv'), rows.map(r => `<span>${esc(r[0])}</span><span>${/^https:\/\//.test(r[1]) ? `<a href="${esc(r[1])}" target="_blank" rel="noopener" style="color:var(--gold2)">${esc(r[1])}</a>` : esc(r[1])}</span>`).join(''));
-    const sc = $('#setScr'); sc.className = 'note' + (screenOn() ? ' ok' : ''); sc.textContent = screenOn() ? 'Presenter screen is open and following this control screen.' : (SCREEN_BC ? 'Presenter screen is not open yet.' : 'This browser cannot link two windows. Use Chrome or Edge.');
+    const sc = $('#setScr'); sc.className = 'note' + (screenOn() ? ' ok' : ''); sc.textContent = screenOn() ? 'Presenter screen is open and following this control screen.' : 'Presenter screen is not open yet. Click OPEN PRESENTER SCREEN below.';
     $('#thDark').classList.toggle('on', (H.settings.theme || 'dark') !== 'light'); $('#thLight').classList.toggle('on', H.settings.theme === 'light');
     $('#setDemo').textContent = H.demo ? (H.demoRun ? 'Demo is running. Activate a question to watch sample responses arrive.' : 'Demo is paused (sample data still on screen).') : 'Demo is off. You are looking at the real session.';
     return built;
@@ -1321,7 +1331,7 @@ const ACT = {
   clear() { H.wall.cleared[curKey()] = Date.now(); toast('Screen cleared · no data deleted'); sched(); },
   openScreen() {
     const w = window.open(location.pathname + '?view=screen', 'lv-presenter-screen', 'popup=yes,width=1280,height=720');
-    if (!w) toast('Allow pop-ups for this site to open the presenter screen'); else { lastSnap = ''; setTimeout(broadcastScreen, 600); }
+    if (!w) toast('Allow pop-ups for this site to open the presenter screen'); else { screenWin = w; lastSnap = ''; setTimeout(broadcastScreen, 600); setTimeout(broadcastScreen, 1500); }
   },
   theme(el) {
     const t = el.dataset.t === 'toggle' ? (H.settings.theme === 'light' ? 'dark' : 'light') : el.dataset.t;
@@ -1341,12 +1351,14 @@ const ACT = {
 
 function bootHost() {
   buildHost(); connectReal(); applyTheme(H.settings.theme);
-  if (SCREEN_BC) SCREEN_BC.onmessage = e => {
-    let m; try { m = JSON.parse(e.data); } catch (x) { return; }
-    if (!m) return;
+  const ctlMsg = (data, src) => {
+    const m = parseScreenMsg(data); if (!m) return;
+    if (src && (m.t === 'hello' || m.t === 'ping')) screenWin = src;
     if (m.t === 'hello') { H.screenSeen = Date.now(); lastSnap = ''; broadcastScreen(); sched(); }
-    else if (m.t === 'ping') { const was = screenOn(); H.screenSeen = Date.now(); try { SCREEN_BC.postMessage(JSON.stringify({ t: 'alive' })); } catch (x) {} if (!was) sched(); }
+    else if (m.t === 'ping') { const was = screenOn(); H.screenSeen = Date.now(); screenSend(JSON.stringify({ t: 'alive' })); if (!was) sched(); }
   };
+  if (SCREEN_BC) SCREEN_BC.onmessage = e => ctlMsg(e.data, null);
+  window.addEventListener('message', e => ctlMsg(e.data, e.source || null));
   setInterval(() => { if (H.screenSeen && !screenOn()) { H.screenSeen = 0; sched(); } }, 4000);
   demoT.onChange = sched;
   document.addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (b && !b.disabled && ACT[b.dataset.act]) ACT[b.dataset.act](b); });
@@ -1399,17 +1411,17 @@ function bootScreen() {
     if (changed) { H.settings.theme = theme; applyTheme(theme); const st = stage(); if (st) st.dataset.key = ''; }
     sched();
   };
-  if (SCREEN_BC) {
-    SCREEN_BC.onmessage = e => {
-      let m; try { m = JSON.parse(e.data); } catch (x) { return; }
-      if (!m) return;
-      if (m.t === 'snap' || m.t === 'alive') { lastAlive = Date.now(); wait.hidden = true; }
-      if (m.t === 'snap') applySnap(m);
-    };
-    const hello = () => { try { SCREEN_BC.postMessage(JSON.stringify({ t: 'hello' })); } catch (x) {} };
-    hello();
-    setInterval(() => { try { SCREEN_BC.postMessage(JSON.stringify({ t: 'ping' })); } catch (x) {} if (Date.now() - lastAlive > 9000) { if (wait.hidden) hello(); wait.hidden = false; } }, 3000);
-  } else wait.querySelector('.t').textContent = 'This browser cannot link two windows. Use Chrome or Edge.';
+  const scrMsg = data => {
+    const m = parseScreenMsg(data); if (!m) return;
+    if (m.t === 'snap' || m.t === 'alive') { lastAlive = Date.now(); wait.hidden = true; }
+    if (m.t === 'snap') applySnap(m);
+  };
+  if (SCREEN_BC) SCREEN_BC.onmessage = e => scrMsg(e.data);
+  window.addEventListener('message', e => { if (window.opener && e.source === window.opener) scrMsg(e.data); });
+  const hello = () => screenSend(JSON.stringify({ t: 'hello' }));
+  hello(); setTimeout(hello, 800);
+  setInterval(() => { screenSend(JSON.stringify({ t: 'ping' })); if (Date.now() - lastAlive > 9000) { if (wait.hidden) hello(); wait.hidden = false; } }, 3000);
+  if (!SCREEN_BC && !window.opener) wait.querySelector('.t').textContent = 'Open this screen with the PRESENTER SCREEN button on the control screen.';
   window.addEventListener('resize', sched);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { const c = $('#cloud'); if (c) c.dataset.sig = ''; sched(); });
   sched();
