@@ -397,6 +397,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
    signed in to several or company Google accounts work normally.
    Opened as a local file without config.js, the page runs in single-device LOCAL mode.
    ===================================================================== */
+const APP_VERSION = 'v2026.11.25-3';
 const CONFIG = {
   maxChars: 300,
   minForInsight: 5
@@ -803,8 +804,16 @@ function broadcastScreen() {
   const st = S();
   const js = JSON.stringify({ t: 'snap', view: publicView(st), wall: H.wall, demo: H.demo, theme: H.settings.theme || 'dark', purl: participantUrl(), joined: (T && T.joined) || 0,
     tree: { state: T.tree.state, responses: T.tree.responses, participants: T.tree.participants } });
+  saveScreenInfo(st);
   if (js === lastSnap) return; lastSnap = js;
   screenSend(js);
+}
+let lastScreenSaved = '';
+function saveScreenInfo(st) {
+  if (ROLE !== 'host' || H.demo || !realT || realT.kind !== 'gas' || !st.started) return;
+  const info = { sid: st.sid, view: publicView(st), wall: H.wall, theme: H.settings.theme === 'light' ? 'light' : 'dark' };
+  const js = JSON.stringify(info); if (js === lastScreenSaved) return; lastScreenSaved = js;
+  safe(realT.update({ 'state/screen': info }));
 }
 const screenOn = () => Date.now() - (H.screenSeen || 0) < 8000;
 
@@ -909,7 +918,7 @@ function renderHost() {
   setHtml($('#chips'), `<span class="chip ${m.cls}">${m.dot ? `<i class="dot ${m.pulse ? 'pulse' : ''}"></i>` : ''}${m.txt}</span>
     <span class="chip opt2">PROGRESS <b>${st.closing ? 'CLOSING' : st.cur ? 'Q' + st.cur + '/3' : 'OPENING'}</b></span>
     <span class="chip">RESPONSES <b id="chipN">${n}</b></span><span class="chip opt">PARTICIPANTS <b>${p}</b></span>
-    ${ROLE === 'host' ? `<span class="chip ${screenOn() ? 'live' : ''}" title="What the projector shows">ON SCREEN <b>${screenOn() ? esc((NAV.find(x => x[0] === publicView(st)) || [0, publicView(st) === 'all' ? 'ALL RESPONSES' : publicView(st).toUpperCase()])[1]) : 'NOT OPEN'}</b></span>` : ''}`);
+    ${ROLE === 'host' ? `<span class="chip ${screenOn() ? 'live' : ''}" title="What the projector shows">ON SCREEN <b>${(screenOn() || (realT && realT.kind === 'gas' && !H.demo)) ? esc((NAV.find(x => x[0] === publicView(st)) || [0, publicView(st) === 'all' ? 'ALL RESPONSES' : publicView(st).toUpperCase()])[1]) : 'NOT OPEN'}</b></span>` : ''}`);
   renderCtrl(st); renderStage(st);
 }
 function setHtml(el, html) { if (el._h !== html) { el.innerHTML = html; el._h = html; return true; } return false; }
@@ -1088,7 +1097,7 @@ const VIEWS = {
         <div class="box"><h4>EXPORT &amp; KEYBOARD</h4><div class="rowbtn" style="margin-top:0"><button class="btn" data-act="csv">EXPORT CSV</button><button class="btn" data-act="json">EXPORT JSON</button><button class="btn" data-act="summary">DOWNLOAD SUMMARY</button></div>
           <p style="margin-top:14px;line-height:2"><kbd>→</kbd> <kbd>←</kbd> next / previous question · <kbd>A</kbd> activate · <kbd>P</kbd> pause / resume · <kbd>Space</kbd> freeze / resume live wall<br>
           <kbd>1</kbd> question · <kbd>2</kbd> live · <kbd>3</kbd> all responses · <kbd>4</kbd> word cloud · <kbd>5</kbd> top 5 · <kbd>6</kbd> insights · <kbd>0</kbd> overview · <kbd>F</kbd> fullscreen</p>
-          <p>In fullscreen the menus fade out after a few seconds; move the mouse to bring them back.</p></div>
+          <p>In fullscreen the menus fade out after a few seconds; move the mouse to bring them back.</p><p style="opacity:.7">Version ${APP_VERSION}</p></div>
       </div>
     </div>`);
     const m = modeInfo(), pu = participantUrl(); $('#setUrl').value = pu || '(not ready yet)';
@@ -1099,7 +1108,7 @@ const VIEWS = {
     const i = gasInfo(), rows = [];
     if (i) { rows.push(['Participant link', participantUrl() || '(not set)']); if (i.sheetUrl) rows.push(['Google Sheet', i.sheetUrl]); }
     setHtml($('#setKv'), rows.map(r => `<span>${esc(r[0])}</span><span>${/^https:\/\//.test(r[1]) ? `<a href="${esc(r[1])}" target="_blank" rel="noopener" style="color:var(--gold2)">${esc(r[1])}</a>` : esc(r[1])}</span>`).join(''));
-    const sc = $('#setScr'); sc.className = 'note' + (screenOn() ? ' ok' : ''); sc.textContent = screenOn() ? 'Presenter screen is open and following this control screen.' : 'Presenter screen is not open yet. Click OPEN PRESENTER SCREEN below.';
+    const sc = $('#setScr'); sc.className = 'note' + (screenOn() ? ' ok' : ''); sc.textContent = screenOn() ? 'Presenter screen is open and linked directly to this control screen.' : (realT && realT.kind === 'gas' && !H.demo) ? 'If the presenter screen is open, it follows this screen through the Google Sheet (about 2–3 s delay). Open it with the button below.' : 'Presenter screen is not open yet. Click OPEN PRESENTER SCREEN below.';
     $('#thDark').classList.toggle('on', (H.settings.theme || 'dark') !== 'light'); $('#thLight').classList.toggle('on', H.settings.theme === 'light');
     $('#setDemo').textContent = H.demo ? (H.demoRun ? 'Demo is running. Activate a question to watch sample responses arrive.' : 'Demo is paused (sample data still on screen).') : 'Demo is off. You are looking at the real session.';
     return built;
@@ -1330,7 +1339,7 @@ const ACT = {
   hide() { H.wall.hidden = !H.wall.hidden; sched(); },
   clear() { H.wall.cleared[curKey()] = Date.now(); toast('Screen cleared · no data deleted'); sched(); },
   openScreen() {
-    const w = window.open(location.pathname + '?view=screen', 'lv-presenter-screen', 'popup=yes,width=1280,height=720');
+    const w = window.open(location.pathname + '?view=screen' + (HOSTKEY ? '&key=' + encodeURIComponent(HOSTKEY) : ''), 'lv-presenter-screen', 'popup=yes,width=1280,height=720');
     if (!w) toast('Allow pop-ups for this site to open the presenter screen'); else { screenWin = w; lastSnap = ''; setTimeout(broadcastScreen, 600); setTimeout(broadcastScreen, 1500); }
   },
   theme(el) {
@@ -1389,13 +1398,15 @@ function bootHost() {
    ===================================================================== */
 function bootScreen() {
   document.body.classList.add('display');
-  T = realT = new MemoryT(); realT.kind = 'screen';
+  const mem = new MemoryT(); mem.kind = 'screen';
+  const gas = (GAS && HOSTKEY) ? new GasT('host', HOSTKEY) : null;   // reads the session from the Google Sheet
+  T = realT = mem;
   applyTheme((ls.get('lv:host:settings', {}) || {}).theme);
   buildHost();
   const hint = document.createElement('div'); hint.className = 'fshint';
   hint.innerHTML = '<b>PRESENTER SCREEN</b><span>Drag this window to the projector, then click here (or press F) for full screen.</span>';
   const wait = document.createElement('div'); wait.className = 'scrwait';
-  wait.innerHTML = '<div class="kicker">PRESENTER SCREEN</div><div class="t">Waiting for the control screen…</div><div>Keep the host control page open in this same browser on this laptop.</div>';
+  wait.innerHTML = '<div class="kicker">PRESENTER SCREEN</div><div class="t">Waiting for the control screen…</div><div class="w2">Open it with the PRESENTER SCREEN button on the control screen (press Ctrl+F5 there first).</div><div style="font-size:11px;opacity:.6">' + APP_VERSION + '</div>';
   document.body.appendChild(wait); document.body.appendChild(hint);
   const fs = () => { const d = document; if (!d.fullscreenElement && d.documentElement.requestFullscreen) d.documentElement.requestFullscreen().catch(() => {}); };
   hint.addEventListener('click', fs); document.addEventListener('dblclick', fs);
@@ -1403,25 +1414,49 @@ function bootScreen() {
   document.addEventListener('fullscreenchange', () => { hint.hidden = !!document.fullscreenElement; });
   let it; const wake = () => { document.body.classList.remove('nocursor'); clearTimeout(it); it = setTimeout(() => document.body.classList.add('nocursor'), 2500); };
   ['mousemove', 'mousedown'].forEach(ev => document.addEventListener(ev, wake)); wake();
-  let lastAlive = 0;
-  const applySnap = m => {
-    const theme = m.theme === 'light' ? 'light' : 'dark', changed = (H.settings.theme || 'dark') !== theme;
-    T.tree = m.tree || T.tree; T.joined = +m.joined || 0;
-    H.view = m.view || 'question'; H.wall = m.wall || H.wall; H.demo = !!m.demo; SCREEN_PURL = m.purl || '';
-    if (changed) { H.settings.theme = theme; applyTheme(theme); const st = stage(); if (st) st.dataset.key = ''; }
-    sched();
+  let lastLocal = 0;
+  const localAlive = () => Date.now() - lastLocal < 9000;
+  const setTheme = t => {
+    const theme = t === 'light' ? 'light' : 'dark';
+    if ((H.settings.theme || 'dark') !== theme) { H.settings.theme = theme; applyTheme(theme); const st = stage(); if (st) st.dataset.key = ''; }
   };
+  const updWait = () => {
+    const gasOk = gas && gas._first && gas.status === 'live';
+    wait.hidden = localAlive() || !!gasOk;
+    if (!wait.hidden && gas && gas.status === 'error') wait.querySelector('.w2').textContent = gas.error || 'Cannot reach the Google Sheet.';
+  };
+  /* source 1: direct link from the control window (instant; also carries demo data) */
+  const applySnap = m => {
+    T = realT = mem;
+    mem.tree = m.tree || mem.tree; mem.joined = +m.joined || 0;
+    H.view = m.view || 'question'; H.wall = m.wall || H.wall; H.demo = !!m.demo; SCREEN_PURL = m.purl || '';
+    setTheme(m.theme); sched();
+  };
+  /* source 2: the shared session in the Google Sheet (works even if the windows cannot talk) */
+  const followGas = () => {
+    if (!gas || localAlive() || !gas._first) return false;
+    T = realT = gas; H.demo = false;
+    SCREEN_PURL = H.settings.baseUrl || (location.origin + location.pathname);
+    const st = gas.tree.state || {}, sc = st.screen || null;
+    if (sc) { H.view = sc.view || 'question'; H.wall = sc.wall || { frozenAt: null, hidden: false, cleared: {} }; setTheme(sc.theme); }
+    else if (!st.started) H.view = 'opening';
+    return true;
+  };
+  if (gas) { gas.onChange = () => { if (followGas()) sched(); updWait(); }; gas.onStatus = gas.onChange; }
   const scrMsg = data => {
     const m = parseScreenMsg(data); if (!m) return;
-    if (m.t === 'snap' || m.t === 'alive') { lastAlive = Date.now(); wait.hidden = true; }
+    if (m.t === 'snap' || m.t === 'alive') { lastLocal = Date.now(); updWait(); }
     if (m.t === 'snap') applySnap(m);
   };
   if (SCREEN_BC) SCREEN_BC.onmessage = e => scrMsg(e.data);
   window.addEventListener('message', e => { if (window.opener && e.source === window.opener) scrMsg(e.data); });
   const hello = () => screenSend(JSON.stringify({ t: 'hello' }));
   hello(); setTimeout(hello, 800);
-  setInterval(() => { screenSend(JSON.stringify({ t: 'ping' })); if (Date.now() - lastAlive > 9000) { if (wait.hidden) hello(); wait.hidden = false; } }, 3000);
-  if (!SCREEN_BC && !window.opener) wait.querySelector('.t').textContent = 'Open this screen with the PRESENTER SCREEN button on the control screen.';
+  setInterval(() => {
+    screenSend(JSON.stringify({ t: 'ping' }));
+    if (!localAlive()) { hello(); if (followGas()) sched(); }
+    updWait();
+  }, 3000);
   window.addEventListener('resize', sched);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { const c = $('#cloud'); if (c) c.dataset.sig = ''; sched(); });
   sched();
@@ -1503,7 +1538,7 @@ function renderParticipant() {
 
 {
   const p = new URLSearchParams(location.search);
-  if (p.get('view') === 'screen') ROLE = 'screen';
+  if (p.get('view') === 'screen') { ROLE = 'screen'; HOSTKEY = String(p.get('key') || ''); }
   else if (GAS) { ROLE = p.get('view') === 'host' ? 'host' : 'participant'; HOSTKEY = String(p.get('key') || ''); }
   else ROLE = /^#join$/i.test(location.hash) ? 'participant' : 'host';
   if (ROLE === 'host') bootHost(); else if (ROLE === 'screen') bootScreen(); else bootParticipant();
