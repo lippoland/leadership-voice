@@ -139,6 +139,31 @@ body.idle{cursor:none}
 .wallmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(36,13,8,.9);z-index:3;flex-direction:column;gap:12px}
 .frozen{color:var(--gold);font-size:11px;letter-spacing:.22em;font-weight:700}
 
+/* ---------- grouped bubbles (live responses, Slido-style) ---------- */
+.bub{flex:1;position:relative;min-height:0}
+.bb{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;color:var(--white);
+  background:radial-gradient(circle at 34% 28%,#7A2E20,#4D1E16 70%);border:1px solid rgba(249,90,68,.35);box-shadow:0 18px 50px rgba(0,0,0,.35);
+  transition:left .9s cubic-bezier(.2,.8,.2,1),top .9s cubic-bezier(.2,.8,.2,1),width .9s cubic-bezier(.2,.8,.2,1),height .9s cubic-bezier(.2,.8,.2,1),box-shadow .8s,border-color .4s;
+  animation:bpop .8s cubic-bezier(.2,.8,.2,1) both,drift var(--d,9s) ease-in-out var(--dl,0s) infinite alternate}
+.bb:hover,.bb:focus-visible{border-color:var(--gold2);outline:none}
+.bb.r0{background:radial-gradient(circle at 34% 28%,#FF8A72,#F95A44 55%,#D8432E);border-color:#FFB4A4;color:#2B100A}
+.bb.r1,.bb.r2{background:radial-gradient(circle at 34% 28%,#9A3A28,#60261C 70%);border-color:rgba(249,90,68,.6)}
+.bb.solo{background:radial-gradient(circle at 34% 28%,rgba(77,30,22,.95),rgba(48,18,12,.95) 70%);border-color:rgba(212,196,180,.18)}
+.bb.grow{box-shadow:0 0 0 4px rgba(249,90,68,.55),0 20px 70px rgba(249,90,68,.35)}
+.bb-in{width:76%;max-height:80%;display:flex;flex-direction:column;align-items:center;gap:.3em;overflow:hidden;pointer-events:none}
+.bb-n{font-family:var(--serif);font-weight:600;line-height:.85;color:var(--gold)}
+.bb.r0 .bb-n{color:#2B100A}
+.bb-l{font-size:.62em;letter-spacing:.2em;text-transform:uppercase;font-weight:700;opacity:.75;font-family:var(--sans)}
+.bb-h{font-weight:800;letter-spacing:.07em;text-transform:uppercase;line-height:1.15}
+.bb-t{font-weight:600;line-height:1.25;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+.bb-q{font-family:var(--serif);font-style:italic;line-height:1.2;opacity:.9;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+@keyframes bpop{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:none}}
+.bubmore{position:absolute;right:0;bottom:0;font-size:clamp(10px,.85vw,13px);letter-spacing:.14em;color:var(--mute);text-transform:uppercase;font-weight:700}
+.modal .m.mlist{max-width:780px;max-height:84vh;overflow:auto}
+.m.mlist .k{font-size:11px;letter-spacing:.24em;color:var(--gold);font-weight:700;text-transform:uppercase}
+.m.mlist ol{margin:16px 0 0 22px;color:var(--white);font-size:16px;line-height:1.45}
+.m.mlist li{margin:8px 0;padding-left:4px}
+
 /* ---------- all responses ---------- */
 .all{flex:1;overflow:auto;display:grid;gap:12px;align-content:start;grid-auto-rows:max-content;grid-template-columns:repeat(auto-fill,minmax(var(--min,300px),1fr));padding-right:6px;min-height:0}
 .all .card{overflow:visible;min-height:auto;font-size:var(--fs,17px);padding:14px 18px;animation:fade .5s both;align-items:flex-start;flex-direction:column;gap:6px}
@@ -873,27 +898,21 @@ const VIEWS = {
       <div class="stat"><div><div class="n" id="qN">0</div><div class="l">RESPONSES</div></div><div id="qS"></div></div></div>${qrPanel()}</div>`);
     $('#qN').textContent = responses(q.key).length; setHtml($('#qS'), statusHtml(st.q[q.key].status)); updateQr();
   },
-  live(st, q) {
-    const fresh = mount('live|' + q.key, '', head(q, 'LIVE RESPONSES', `<div class="count"><div class="frozen" id="fz"></div><div class="n" data-n>0</div><div class="l">RESPONSES</div></div>`) + `<div class="wall" id="wall"></div>`);
-    const wall = $('#wall'), all = responses(q.key); $('[data-n]', stage()).textContent = all.length;
+  live(st, q, qi) {
+    const fresh = mount('live|' + q.key, '', head(q, 'LIVE RESPONSES', `<div class="count"><div class="frozen" id="fz"></div><div class="n" data-n>0</div><div class="l">RESPONSES</div></div>`) +
+      `<div class="bub" id="bub"></div><div class="foot">Similar answers are grouped into one bubble automatically (shared theme or wording, no AI). Bigger bubble = more answers. Click a bubble to read every answer in it.</div>`);
+    const box = $('#bub'), all = responses(q.key); $('[data-n]', stage()).textContent = all.length;
+    if (fresh) box.addEventListener('click', e => { const b = e.target.closest('.bb'); if (!b) return; const g = (box._groups || []).find(x => x.id === b.dataset.cid); if (g) showGroup(g, q); });
+    if (fresh) box.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('bb')) { e.preventDefault(); e.stopPropagation(); e.target.click(); } });
     const cleared = H.wall.cleared[q.key] || 0;
-    let list = all.filter(r => r.ts > cleared && (!H.wall.frozenAt || r.ts <= H.wall.frozenAt));
+    const list = all.filter(r => r.ts > cleared && (!H.wall.frozenAt || r.ts <= H.wall.frozenAt));
     const waiting = H.wall.frozenAt ? all.filter(r => r.ts > H.wall.frozenAt).length : 0;
     $('#fz').textContent = H.wall.frozenAt ? 'SCREEN FROZEN' + (waiting ? ' · +' + waiting + ' NEW' : '') : '';
-    const W = wall.clientWidth, Ht = wall.clientHeight, cols = W > 1500 ? 4 : W > 900 ? 3 : W > 560 ? 2 : 1, rows = Math.max(1, Math.min(4, Math.floor(Ht / (Ht > 760 ? 200 : 150))));
-    wall.style.gridTemplateColumns = `repeat(${cols},1fr)`; wall.style.gridTemplateRows = `repeat(${rows},1fr)`;
-    list = list.slice(-cols * rows).reverse();
-    const want = new Set(list.map(r => r.id)); $$('.card', wall).forEach(c => { if (!want.has(c.dataset.id)) c.remove(); });
-    const have = new Set($$('.card', wall).map(c => c.dataset.id));
-    list.slice().reverse().forEach(r => {
-      if (have.has(r.id)) return;
-      const c = document.createElement('div'); c.className = 'card' + (r.t.length > 170 ? ' xlong' : r.t.length > 95 ? ' long' : '') + (fresh ? '' : ' fresh'); c.dataset.id = r.id; c.textContent = r.t;
-      c.style.setProperty('--d', (7 + Math.random() * 5).toFixed(1) + 's'); c.style.setProperty('--dl', (0.8 + Math.random() * 2).toFixed(1) + 's');
-      wall.prepend(c); if (!fresh) setTimeout(() => c.classList.remove('fresh'), 6000);
-    });
+    box.style.visibility = H.wall.hidden ? 'hidden' : '';
+    if (!H.wall.hidden) layoutBubbles(box, groupAnswers(qi, list));
     let msg = $('#wallMsg');
     const text = H.wall.hidden ? ['Responses are hidden', 'Press SHOW to display them again. All responses are safe.'] : !list.length ? [st.q[q.key].status === 'open' ? 'Waiting for the first voices…' : 'No responses on screen', all.length ? 'The screen was cleared. New responses will appear here; nothing was deleted.' : 'Responses will appear here as participants submit.'] : null;
-    if (text) { if (!msg) { msg = document.createElement('div'); msg.id = 'wallMsg'; msg.className = 'wallmsg'; wall.parentNode.appendChild(msg); } msg.style.top = wall.offsetTop + 'px'; setHtml(msg, `<div class="empty"><div class="t">${text[0]}</div><div>${text[1]}</div></div>`); }
+    if (text) { if (!msg) { msg = document.createElement('div'); msg.id = 'wallMsg'; msg.className = 'wallmsg'; box.parentNode.appendChild(msg); } msg.style.top = box.offsetTop + 'px'; setHtml(msg, `<div class="empty"><div class="t">${text[0]}</div><div>${text[1]}</div></div>`); }
     else if (msg) msg.remove();
   },
   all(st, q, qi) {
@@ -1010,6 +1029,114 @@ const VIEWS = {
       <div class="fin"><span>OUR LEADERSHIP.</span><span>OUR RESPONSIBILITY.</span><span>OUR IMPACT.</span></div>`);
   }
 };
+
+/* ---------- grouping similar answers (Slido-style bubbles) ----------
+   Rule-based, no AI. Each answer joins ONE group:
+   1. its main theme = the first theme it mentions (bilingual keyword library above), or
+   2. without a theme: an earlier answer that shares most of its words (Jaccard >= 0.5).
+   Group size = number of answers; the group shows the most typical answer as an example. */
+function themeOrder(q, text) {
+  const s2 = ' ' + normText(text) + ' ', out = [];
+  q.themes.forEach(([id]) => { let best = Infinity; TH[id].re.forEach(re => { const m = re.exec(s2); if (m && m.index < best) best = m.index; }); if (best < Infinity) out.push([id, best]); });
+  return out.sort((a, b) => a[1] - b[1]).map(x => x[0]);
+}
+const jac = (a, b) => { if (!a.size || !b.size) return 0; let i = 0; a.forEach(w => { if (b.has(w)) i++; }); return i / (a.size + b.size - i); };
+const gCache = {};
+function groupAnswers(qi, list) {
+  const sig = qi + '|' + list.length + '|' + (list[0] ? list[0].id : '') + '|' + (list.length ? list[list.length - 1].id + list[list.length - 1].ts : '');
+  if (gCache[qi] && gCache[qi].sig === sig) return gCache[qi].G;
+  const q = QS[qi], G = new Map(), loose = [];
+  list.forEach(r => {
+    const it = { r, tok: tokens(r.t), th: themeOrder(q, r.t), norm: normText(r.t) };
+    if (it.th.length) {
+      const id = 'th:' + it.th[0];
+      if (!G.has(id)) G.set(id, { id, theme: it.th[0], m: [] });
+      G.get(id).m.push(it); return;
+    }
+    let best = null, bs = 0;
+    G.forEach(g => g.m.forEach(m => { const v = m.norm === it.norm ? 1 : jac(it.tok, m.tok); if (v > bs) { bs = v; best = g; } }));
+    if (best && bs >= 0.5) best.m.push(it);
+    else { const id = 'tx:' + r.id; G.set(id, { id, theme: null, m: [it] }); }
+  });
+  const out = Array.from(G.values()).map(g => {
+    let rep = g.m[0], rs = -1;
+    if (g.m.length > 2) g.m.forEach(a => { let sc = 0; g.m.forEach(b => { if (a !== b) sc += jac(a.tok, b.tok); }); sc -= a.r.t.length / 4000; if (sc > rs) { rs = sc; rep = a; } });
+    else g.m.forEach(a => { if (a.r.t.length < rep.r.t.length) rep = a; });
+    const qt = g.theme ? q.themes.find(t => t[0] === g.theme) : null;
+    return { id: g.id, n: g.m.length, theme: g.theme, label: g.theme ? ((qt && qt[2]) || TH[g.theme].l) : '', sample: rep.r.t,
+      answers: g.m.map(m => m.r.t), last: Math.max.apply(null, g.m.map(m => m.r.ts || 0)) };
+  }).sort((a, b) => b.n - a.n || b.last - a.last);
+  gCache[qi] = { sig, G: out };
+  return out;
+}
+function showGroup(g, q) {
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<div class="m mlist" role="dialog" aria-modal="true"><div class="k"></div><h3></h3><ol></ol><div class="rowbtn"><button class="btn gold" data-x="1">CLOSE</button></div></div>`;
+  $('.k', m).textContent = 'QUESTION ' + q.no + ' · ' + g.n + (g.n === 1 ? ' ANSWER' : ' SIMILAR ANSWERS');
+  $('h3', m).textContent = g.theme ? g.label : '“' + g.sample + '”';
+  const ol = $('ol', m); g.answers.forEach(a => { const li = document.createElement('li'); li.textContent = a; ol.appendChild(li); });
+  m.addEventListener('click', e => { if (e.target === m || e.target.closest('[data-x]')) m.remove(); });
+  document.body.appendChild(m); $('[data-x]', m).focus();
+}
+function layoutBubbles(box, groups) {
+  const W = box.clientWidth, Ht = box.clientHeight; if (W < 80 || Ht < 80) return;
+  const MAXB = W < 700 ? 10 : 18, top = groups.slice(0, MAXB), more = groups.length - top.length;
+  const sig = top.map(g => g.id + ':' + g.n).join('|') + '|' + more + '|' + W + 'x' + Ht;
+  if (box.dataset.sig === sig) return; box.dataset.sig = sig;
+  box._groups = groups;
+  const max = top.length ? top[0].n : 1, base = Math.min(W, Ht);
+  let placed = [], scale = 1;
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const rMax = base * 0.3 * scale, rMin = Math.max(34, base * 0.085 * scale);
+    placed = []; let miss = 0;
+    top.forEach(g => {
+      const r = max > 1 ? rMin + (rMax - rMin) * Math.sqrt((g.n - 1) / (max - 1)) : Math.min(rMax, Math.max(rMin, base * 0.15 * scale));
+      for (let t = 0; t < 4000; t++) {
+        const a = t * 0.27, d = 1.6 * a, x = W / 2 + d * Math.cos(a) * (W / Ht), y = Ht / 2 + d * Math.sin(a);
+        if (x - r < 2 || y - r < 2 || x + r > W - 2 || y + r > Ht - 2) { if (d > Math.max(W, Ht)) break; continue; }
+        if (placed.some(p => Math.hypot(p.x - x, p.y - y) < p.r + r + 10)) continue;
+        placed.push({ g, x, y, r }); return;
+      }
+      miss++;
+    });
+    if (!miss) break; scale *= 0.88;
+  }
+  const prev = box._prev || {}, seen = new Set(), els = {};
+  $$('.bb', box).forEach(el => els[el.dataset.cid] = el);
+  placed.forEach((p, i) => {
+    const g = p.g; seen.add(g.id);
+    let el = els[g.id];
+    if (!el) {
+      el = document.createElement('div'); el.className = 'bb'; el.dataset.cid = g.id; el.tabIndex = 0; el.setAttribute('role', 'button');
+      el.style.setProperty('--d', (7 + Math.random() * 5).toFixed(1) + 's'); el.style.setProperty('--dl', (Math.random() * 2).toFixed(1) + 's');
+      el.innerHTML = '<div class="bb-in"><div class="bb-n"></div><div class="bb-h"></div><div class="bb-t"></div><div class="bb-q"></div></div>';
+      box.appendChild(el);
+    }
+    const r = p.r, solo = g.n === 1;
+    el.className = 'bb' + (i === 0 && g.n > 1 ? ' r0' : (i < 3 && g.n > 1) ? ' r' + i : '') + (solo ? ' solo' : '');
+    el.style.left = (p.x - r) + 'px'; el.style.top = (p.y - r) + 'px'; el.style.width = el.style.height = (2 * r) + 'px';
+    el.setAttribute('aria-label', g.n + ' answers: ' + (g.theme ? g.label : g.sample));
+    const n = $('.bb-n', el), h = $('.bb-h', el), t = $('.bb-t', el), qd = $('.bb-q', el);
+    n.style.fontSize = Math.max(16, Math.min(92, r * (solo ? 0.24 : 0.4))) + 'px';
+    n.innerHTML = ''; n.appendChild(document.createTextNode(String(g.n)));
+    if (!solo && r > 64) { const l = document.createElement('div'); l.className = 'bb-l'; l.textContent = 'answers'; l.style.fontSize = Math.max(9, Math.min(14, r * 0.07)) + 'px'; n.appendChild(l); }
+    const showTheme = !!g.theme && !solo;
+    h.hidden = !showTheme; t.hidden = showTheme; qd.hidden = !showTheme || r < 92;
+    if (showTheme) {
+      h.textContent = g.label; h.style.fontSize = Math.max(10, Math.min(26, r * 0.11)) + 'px';
+      qd.textContent = '“' + g.sample + '”'; qd.style.fontSize = Math.max(11, Math.min(20, r * 0.09)) + 'px';
+    } else {
+      t.textContent = g.sample + (g.n > 1 && !g.theme ? '' : ''); t.style.fontSize = Math.max(10, Math.min(22, r * 0.115)) + 'px';
+      t.style.webkitLineClamp = String(r > 130 ? 6 : r > 95 ? 5 : r > 65 ? 4 : 3);
+    }
+    if (prev[g.id] != null && g.n > prev[g.id]) { el.classList.add('grow'); clearTimeout(el._gt); el._gt = setTimeout(() => el.classList.remove('grow'), 2600); }
+  });
+  Object.keys(els).forEach(id => { if (!seen.has(id)) { els[id].style.opacity = 0; setTimeout(() => els[id].remove(), 600); } });
+  const pv = {}; top.forEach(g => pv[g.id] = g.n); box._prev = pv;
+  const unplaced = groups.length - placed.length;
+  let mo = $('.bubmore', box); if (!mo) { mo = document.createElement('div'); mo.className = 'bubmore'; box.appendChild(mo); }
+  mo.textContent = unplaced > 0 ? '+' + unplaced + ' smaller group' + (unplaced === 1 ? '' : 's') + ' · see ALL RESPONSES' : '';
+}
 
 /* ---------- word cloud layout (spiral placement, no overlap) ---------- */
 let mctx = null;
