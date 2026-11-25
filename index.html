@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#240D08">
+<title>Leadership Voice · LippoLand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* LippoLand palette (exec-deck): mahogany 60261C · mahogany dark 3D170F · orange F95A44 · cream FBF7EC */
+  --navy:#3D170F; --bg:#240D08; --char:#4D1E16; --mahog:#60261C;
+  --gold:#F95A44; --goldbg:#F95A44; --gold2:#FF9C86; --white:#FBF7EC; --mute:#CDB8AA;
+  --line:rgba(249,90,68,.28); --line2:rgba(212,196,180,.16);
+  --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --sans:"Manrope",Arial,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--white);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;line-height:1.45}
+button{font-family:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.hidden{display:none!important}
+.bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+   radial-gradient(1100px 700px at 12% -10%,rgba(61,23,15,.95),transparent 60%),
+   radial-gradient(900px 700px at 100% 110%,rgba(249,90,68,.10),transparent 60%),
+   radial-gradient(800px 600px at 80% 0%,rgba(77,30,22,.9),transparent 65%),
+   var(--bg)}
+#sparks{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7}
+.layer{position:relative;z-index:1;height:100%}
+.serif{font-family:var(--serif)}
+.gold{color:var(--gold)}
+.mute{color:var(--mute)}
+.kicker{font-size:clamp(11px,.95vw,15px);letter-spacing:.34em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.rule{width:72px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:clamp(14px,2.4vh,30px) auto}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:999px;border:1px solid var(--line2);
+  font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--white);background:rgba(77,30,22,.7);transition:.2s;white-space:nowrap}
+.btn:hover{border-color:var(--gold);color:var(--gold2)}
+.btn:disabled{opacity:.32;cursor:not-allowed;border-color:var(--line2);color:var(--white)}
+.btn.gold{background:var(--goldbg);color:#2B100A;border-color:var(--goldbg)}
+.btn.gold:hover{background:var(--gold2);border-color:var(--gold2);color:#2B100A}
+.btn.ghost{background:transparent}
+.btn.danger:hover{border-color:#F2B544;color:#F6D27A}
+.btn.on{border-color:var(--gold);color:var(--gold)}
+.btn.big{padding:18px 44px;font-size:clamp(13px,1.1vw,17px);letter-spacing:.3em}
+
+/* ---------- opening ---------- */
+.opening{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5vh 6vw}
+.opening h1{font-family:var(--serif);font-weight:500;font-size:clamp(46px,9.2vw,168px);letter-spacing:.12em;line-height:1;
+  background:linear-gradient(180deg,#FBF7EC 30%,#F7B9A8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;animation:rise 1.4s .15s both}
+.opening .sub{margin-top:2.2vh;font-size:clamp(12px,1.25vw,22px);letter-spacing:.38em;text-transform:uppercase;color:var(--gold);animation:rise 1.4s .45s both}
+.opening .q1{font-family:var(--serif);font-style:italic;font-size:clamp(24px,3.1vw,56px);animation:rise 1.4s .8s both}
+.opening .q2{margin-top:1.2vh;color:var(--mute);font-size:clamp(14px,1.45vw,26px);animation:rise 1.4s 1.05s both}
+.opening .go{margin-top:5.5vh;animation:rise 1.4s 1.35s both}
+.opening .links{margin-top:3vh;display:flex;gap:26px;animation:rise 1.4s 1.6s both}
+.link{font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid transparent;padding-bottom:3px}
+.link:hover{color:var(--gold);border-color:var(--gold)}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* ---------- host shell ---------- */
+.host{height:100%;display:grid;grid-template-rows:auto 1fr auto}
+.top{display:flex;align-items:center;gap:18px;padding:10px 22px;border-bottom:1px solid var(--line2);background:rgba(36,13,8,.72);backdrop-filter:blur(10px);transition:opacity .5s}
+.brand{font-family:var(--serif);font-size:20px;letter-spacing:.2em;white-space:nowrap}
+.brand b{color:var(--gold);font-weight:500}
+.nav{display:flex;gap:0;flex:1;justify-content:center;flex-wrap:nowrap;min-width:0}
+.nav button{padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.12em;white-space:nowrap;color:var(--mute);border-bottom:2px solid transparent;transition:.2s}
+.nav button:hover{color:var(--white)}
+.nav button.act{color:var(--gold);border-color:var(--gold)}
+.chips{display:flex;gap:8px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;border:1px solid var(--line2);font-size:10.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+.chip b{color:var(--white);font-weight:700}
+.chip.demo{border-color:var(--gold);color:var(--gold);background:rgba(249,90,68,.1)}
+.chip.live{border-color:rgba(122,201,150,.5);color:#9ad9b1}
+.chip.warn{border-color:rgba(242,181,68,.5);color:#F6D27A}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.dot.pulse{animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(249,90,68,.6)}100%{box-shadow:0 0 0 10px rgba(249,90,68,0)}}
+.stage{position:relative;overflow:hidden;min-height:0}
+.view{position:absolute;inset:0;padding:clamp(18px,3.2vh,44px) clamp(22px,4vw,72px);animation:fade .6s both;display:flex;flex-direction:column;min-height:0}
+.ctrl{display:flex;align-items:center;gap:8px;padding:10px 18px;border-top:1px solid var(--line2);background:rgba(36,13,8,.8);backdrop-filter:blur(10px);flex-wrap:wrap;transition:opacity .5s}
+.ctrl .sep{width:1px;height:26px;background:var(--line2);margin:0 4px}
+.ctrl .grow{flex:1}
+.qpill{padding:8px 14px;border-radius:999px;background:var(--char);font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--mute);white-space:nowrap}
+.qpill b{color:var(--gold)}
+body.idle .top,body.idle .ctrl{opacity:0}
+body.idle{cursor:none}
+.wm{position:absolute;right:18px;top:12px;z-index:5;font-size:10.5px;letter-spacing:.24em;color:var(--gold);border:1px solid var(--gold);padding:5px 10px;border-radius:4px;background:rgba(36,13,8,.7);font-weight:700}
+
+/* ---------- view head ---------- */
+.vhead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(12px,2.2vh,28px);flex:none}
+.vhead h2{font-family:var(--serif);font-weight:500;font-size:clamp(22px,2.9vw,52px);letter-spacing:.06em;line-height:1.1}
+.vhead .qline{color:var(--mute);font-size:clamp(12px,1.05vw,18px);margin-top:6px;font-style:italic;max-width:70vw}
+.count{text-align:right;white-space:nowrap}
+.count .n{font-family:var(--serif);font-size:clamp(34px,4vw,72px);color:var(--gold);line-height:.9}
+.count .l{font-size:10.5px;letter-spacing:.24em;color:var(--mute);text-transform:uppercase}
+.foot{flex:none;margin-top:10px;font-size:clamp(10px,.8vw,13px);letter-spacing:.08em;color:var(--mute);opacity:.85}
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--mute);gap:14px}
+.empty .t{font-family:var(--serif);font-size:clamp(24px,2.6vw,44px);color:var(--white);font-style:italic}
+
+/* ---------- question view ---------- */
+.qv{flex:1;display:grid;grid-template-columns:1.45fr .85fr;gap:clamp(24px,4vw,80px);align-items:center;min-height:0}
+.qv .main h1{font-family:var(--serif);font-weight:500;font-size:clamp(28px,4.1vw,78px);line-height:1.12;margin:clamp(10px,2vh,26px) 0}
+.qv .main .ptitle{font-size:clamp(12px,1.1vw,19px);letter-spacing:.3em;color:var(--mute);text-transform:uppercase;margin-top:10px}
+.qv .main .sup{font-size:clamp(14px,1.45vw,26px);color:var(--mute);max-width:46ch}
+.qv .stat{display:flex;align-items:center;gap:26px;margin-top:clamp(16px,3.4vh,44px)}
+.qv .stat .n{font-family:var(--serif);font-size:clamp(44px,5.4vw,104px);color:var(--gold);line-height:.85}
+.qv .stat .l{font-size:11px;letter-spacing:.24em;color:var(--mute);text-transform:uppercase}
+.status{display:inline-flex;align-items:center;gap:9px;padding:8px 14px;border-radius:999px;border:1px solid var(--line2);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+.status.open{border-color:var(--gold);color:var(--gold)}
+.lobbyq{font-family:var(--serif);font-style:italic;font-size:clamp(24px,3vw,56px);line-height:1.2;margin-top:2vh}
+.lobbyh{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5vw,96px);letter-spacing:.12em;line-height:1}
+.qr{background:linear-gradient(180deg,rgba(77,30,22,.85),rgba(61,23,15,.85));border:1px solid var(--line);border-radius:22px;padding:clamp(16px,2.4vh,30px);text-align:center;max-height:100%;display:flex;flex-direction:column;align-items:center}
+.qr .t{font-size:clamp(11px,1vw,16px);letter-spacing:.3em;color:var(--gold);font-weight:700}
+.qr .s{font-size:clamp(11px,.95vw,15px);color:var(--mute);margin:6px 0 clamp(10px,1.8vh,20px)}
+.qr .code{background:#fff;border-radius:14px;padding:clamp(8px,1.2vh,14px);width:min(100%,46vh);aspect-ratio:1}
+.qr .code svg{display:block;width:100%;height:100%}
+.qr .url{margin:clamp(10px,1.6vh,18px) 0 10px;font-size:clamp(11px,.9vw,15px);color:var(--white);word-break:break-all;max-width:100%;font-family:ui-monospace,Menlo,Consolas,monospace;opacity:.9}
+.qr .warn{margin-top:10px;font-size:11.5px;color:#F6D27A;max-width:36ch}
+
+/* ---------- live wall ---------- */
+.wall{flex:1;display:grid;gap:clamp(10px,1.4vw,22px);align-content:start;min-height:0;overflow:hidden;grid-auto-rows:1fr}
+.card{background:linear-gradient(160deg,rgba(77,30,22,.92),rgba(61,23,15,.92));border:1px solid var(--line2);border-radius:16px;padding:clamp(12px,1.5vw,24px);
+  font-size:clamp(14px,1.45vw,26px);line-height:1.32;display:flex;align-items:center;position:relative;overflow:hidden;min-height:0;overflow-wrap:anywhere;
+  transition:border-color 1.6s,box-shadow 1.6s}
+.card::before{content:"";position:absolute;left:0;top:18%;bottom:18%;width:2px;background:var(--gold);opacity:.55}
+.card.long{font-size:clamp(12px,1.15vw,21px)}
+.card.xlong{font-size:clamp(11px,.98vw,18px)}
+.wall .card{animation:pop .8s cubic-bezier(.2,.8,.2,1) both, drift var(--d,9s) ease-in-out var(--dl,0s) infinite alternate}
+.card.fresh{border-color:var(--gold);box-shadow:0 0 0 1px rgba(249,90,68,.4),0 14px 50px rgba(249,90,68,.16)}
+@keyframes pop{from{opacity:0;transform:translateY(22px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes drift{from{translate:0 -3px}to{translate:0 4px}}
+.wallmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(36,13,8,.9);z-index:3;flex-direction:column;gap:12px}
+.frozen{color:var(--gold);font-size:11px;letter-spacing:.22em;font-weight:700}
+
+/* ---------- all responses ---------- */
+.all{flex:1;overflow:auto;display:grid;gap:12px;align-content:start;grid-auto-rows:max-content;grid-template-columns:repeat(auto-fill,minmax(var(--min,300px),1fr));padding-right:6px;min-height:0}
+.all .card{overflow:visible;min-height:auto;font-size:var(--fs,17px);padding:14px 18px;animation:fade .5s both;align-items:flex-start;flex-direction:column;gap:6px}
+.all .card.spec{border-color:var(--line)}
+.tag{font-size:9.5px;letter-spacing:.2em;color:var(--gold);font-weight:700}
+.all::-webkit-scrollbar,.scroll::-webkit-scrollbar{width:8px}
+.all::-webkit-scrollbar-thumb,.scroll::-webkit-scrollbar-thumb{background:var(--char);border-radius:8px}
+
+/* ---------- word cloud ---------- */
+.cloud{flex:1;position:relative;min-height:0}
+.cloud span{position:absolute;white-space:nowrap;font-weight:700;letter-spacing:.02em;line-height:1;text-transform:uppercase;
+  transition:left 1.1s cubic-bezier(.2,.8,.2,1),top 1.1s cubic-bezier(.2,.8,.2,1),font-size 1.1s cubic-bezier(.2,.8,.2,1),opacity .9s,color .9s;opacity:0}
+
+/* ---------- top 5 ---------- */
+.t5{flex:1;display:flex;flex-direction:column;justify-content:center;gap:clamp(8px,1.6vh,22px);min-height:0}
+.t5row{display:grid;grid-template-columns:clamp(54px,6vw,120px) 1fr clamp(90px,9vw,170px);align-items:center;gap:clamp(12px,2vw,36px);opacity:.25;transition:opacity .6s}
+.t5row.has{opacity:1}
+.t5row .rk{font-family:var(--serif);font-size:clamp(34px,4.6vw,88px);color:var(--gold);line-height:.9}
+.t5row:nth-child(n+2) .rk{color:rgba(249,90,68,.62)}
+.t5row .nm{font-size:clamp(15px,1.75vw,32px);font-weight:700;letter-spacing:.12em}
+.t5row .ds{font-size:clamp(11px,1vw,18px);color:var(--mute);margin:2px 0 8px}
+.bar{height:clamp(5px,.8vh,10px);background:rgba(212,196,180,.12);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#B8402F,var(--gold),var(--gold2));border-radius:99px;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.t5row .pc{text-align:right;font-family:var(--serif);font-size:clamp(30px,3.8vw,74px);line-height:.9}
+.t5row .ct{text-align:right;font-size:clamp(10px,.82vw,14px);letter-spacing:.16em;color:var(--mute);text-transform:uppercase;margin-top:4px}
+
+/* ---------- insights ---------- */
+.ins{flex:1;display:grid;grid-template-columns:1.15fr 1fr;grid-template-rows:1fr auto;gap:clamp(12px,1.6vw,26px);min-height:0}
+.panel{background:linear-gradient(160deg,rgba(77,30,22,.8),rgba(61,23,15,.8));border:1px solid var(--line2);border-radius:18px;padding:clamp(12px,1.4vw,24px);min-height:0;overflow:hidden}
+.panel h3{font-size:clamp(10.5px,.9vw,15px);letter-spacing:.3em;color:var(--gold);font-weight:700;margin-bottom:clamp(8px,1.2vh,16px)}
+.panel p.big{font-size:clamp(14px,1.25vw,23px);line-height:1.4}
+.insv .qline{display:none}
+.panel .voice{margin-top:clamp(8px,1.4vh,16px)}
+.panel .voice h3{margin-bottom:4px}
+.panel .voice q{display:block;font-family:var(--serif);font-style:italic;font-size:clamp(14px,1.3vw,24px);line-height:1.25;margin-top:3px}
+.mrow{display:grid;grid-template-columns:1fr auto;gap:3px 16px;align-items:end;margin-bottom:clamp(5px,1.1vh,13px)}
+.mrow .nm{font-size:clamp(12px,1.05vw,19px);font-weight:700;letter-spacing:.1em}
+.mrow .pc{font-family:var(--serif);font-size:clamp(18px,1.7vw,30px);color:var(--gold);line-height:1}
+.mrow .bar{grid-column:1/-1}
+.dims{display:flex;gap:8px;flex-wrap:wrap;margin-top:clamp(8px,1.3vh,14px)}
+.dim{display:flex;align-items:baseline;gap:7px;border:1px solid var(--line2);border-radius:99px;padding:5px 13px}
+.dim .v{font-family:var(--serif);font-size:clamp(15px,1.35vw,24px);color:var(--white);line-height:1}
+.dim .k{font-size:clamp(8.5px,.62vw,11px);letter-spacing:.16em;color:var(--mute);text-transform:uppercase}
+.dim.top{border-color:var(--gold)}.dim.top .v{color:var(--gold)}
+.refl{grid-column:1/-1;border:1px solid var(--line);border-radius:18px;padding:clamp(12px,1.8vh,26px) clamp(18px,2.6vw,48px);background:linear-gradient(90deg,rgba(249,90,68,.1),rgba(249,90,68,.02));text-align:center}
+.refl h3{font-size:clamp(10.5px,.9vw,15px);letter-spacing:.3em;color:var(--gold);font-weight:700;margin-bottom:8px}
+.refl p{font-family:var(--serif);font-size:clamp(18px,1.95vw,36px);line-height:1.2;font-style:italic}
+.trans{margin-top:8px;font-size:clamp(11px,.95vw,16px);color:var(--mute);letter-spacing:.04em;font-style:normal;font-family:var(--sans)}
+
+/* ---------- overview / settings ---------- */
+.scroll{flex:1;overflow:auto;min-height:0;padding-right:8px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.kpi{border:1px solid var(--line2);background:rgba(77,30,22,.6);border-radius:16px;padding:16px 20px}
+.kpi .v{font-family:var(--serif);font-size:clamp(30px,3.2vw,56px);color:var(--gold);line-height:1}
+.kpi .k{font-size:10.5px;letter-spacing:.22em;color:var(--mute);text-transform:uppercase;margin-top:6px}
+.kpi .x{font-size:11.5px;color:var(--mute);margin-top:4px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+.box{border:1px solid var(--line2);background:rgba(77,30,22,.6);border-radius:16px;padding:18px 20px}
+.box h4{font-size:11px;letter-spacing:.24em;color:var(--gold);font-weight:700;margin-bottom:10px;text-transform:uppercase}
+.box .qq{font-family:var(--serif);font-size:19px;line-height:1.25;margin-bottom:10px}
+.box .li{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:5px 0;border-bottom:1px solid var(--line2)}
+.box .li span:last-child{color:var(--gold);font-weight:700}
+.box p{font-size:13.5px;color:var(--mute);margin:8px 0}
+.box p b,.box li b{color:var(--white)}
+.words{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.words span{font-size:11px;padding:4px 9px;border-radius:99px;border:1px solid var(--line2);letter-spacing:.08em;text-transform:uppercase}
+.words span b{color:var(--gold);margin-left:5px}
+.rowbtn{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.field{margin:10px 0}
+.field label{display:block;font-size:10.5px;letter-spacing:.2em;color:var(--mute);text-transform:uppercase;margin-bottom:6px}
+.field input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--line2);background:rgba(36,13,8,.7);color:#fff;font:inherit;font-size:14px}
+.box ol,.box ul{margin:8px 0 8px 18px;font-size:13.5px;color:var(--mute)}
+.box li{margin:4px 0}
+.box code,kbd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:rgba(36,13,8,.8);border:1px solid var(--line2);border-radius:5px;padding:1px 6px;color:var(--gold2)}
+.box pre{background:rgba(36,13,8,.85);border:1px solid var(--line2);border-radius:10px;padding:12px;font-size:11.5px;overflow:auto;color:var(--gold2);margin:8px 0;font-family:ui-monospace,Menlo,Consolas,monospace}
+.note{font-size:12.5px;border-left:2px solid var(--gold);padding:6px 12px;color:var(--mute);margin:10px 0;background:rgba(249,90,68,.05)}
+.note.bad{border-color:#F2B544;color:#F6D27A}.note.ok{border-color:#7ac996;color:#9ad9b1}
+
+/* ---------- closing ---------- */
+.closing{align-items:center;justify-content:center;text-align:center}
+.closing .ttl{font-size:clamp(13px,1.5vw,26px);letter-spacing:.5em;color:var(--gold);font-weight:600;animation:rise 1.6s .2s both}
+.closing .st{font-family:var(--serif);font-size:clamp(24px,3.7vw,72px);line-height:1.22;margin-top:1vh}
+.closing .st span{display:block;opacity:0;animation:rise 1.5s both}
+.closing .st span:nth-child(1){animation-delay:.9s}.closing .st span:nth-child(2){animation-delay:1.9s}
+.closing .st span:nth-child(3){animation-delay:2.8s}.closing .st span:nth-child(4){animation-delay:3.7s}
+.closing .st em{color:var(--gold);font-style:italic}
+.closing .sp{max-width:62ch;color:var(--mute);font-size:clamp(13px,1.3vw,24px);animation:rise 1.6s 5s both}
+.closing .fin{margin-top:clamp(14px,3vh,40px);display:flex;gap:clamp(14px,3vw,60px);justify-content:center;flex-wrap:wrap;font-size:clamp(13px,1.5vw,28px);letter-spacing:.34em;font-weight:700}
+.closing .fin span{opacity:0;animation:rise 1.4s both}
+.closing .fin span:nth-child(1){animation-delay:6.2s}.closing .fin span:nth-child(2){animation-delay:6.9s;color:var(--gold)}.closing .fin span:nth-child(3){animation-delay:7.6s}
+
+/* ---------- modal / toast ---------- */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(20,7,4,.78);display:flex;align-items:center;justify-content:center;padding:20px;animation:fade .2s both}
+.modal .m{max-width:480px;width:100%;background:var(--navy);border:1px solid var(--line);border-radius:18px;padding:28px}
+.modal h3{font-family:var(--serif);font-size:26px;font-weight:500;margin-bottom:8px}
+.modal p{color:var(--mute);font-size:14px}
+.modal .rowbtn{justify-content:flex-end;margin-top:22px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:60;background:var(--gold);color:#2B100A;font-weight:700;font-size:12px;letter-spacing:.12em;padding:10px 18px;border-radius:99px;animation:rise .3s both;text-transform:uppercase}
+
+/* ---------- participant ---------- */
+.pt{height:100%;overflow:auto;display:flex;flex-direction:column;padding:max(22px,env(safe-area-inset-top)) 22px max(22px,env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+.pt header{text-align:center;padding:8px 0 18px}
+.pt header .b{font-family:var(--serif);font-size:24px;letter-spacing:.24em}
+.pt header .m{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:17px;margin-top:2px}
+.pt main{flex:1;display:flex;flex-direction:column;justify-content:center;animation:rise .6s both}
+.pt .prog{display:flex;gap:6px;margin:12px 0 20px}
+.pt .prog i{flex:1;height:3px;border-radius:3px;background:rgba(212,196,180,.2)}
+.pt .prog i.d{background:rgba(249,90,68,.5)}.pt .prog i.c{background:var(--gold)}
+.pt .qn{font-size:11.5px;letter-spacing:.28em;color:var(--gold);font-weight:700}
+.pt h1{font-family:var(--serif);font-weight:500;font-size:29px;line-height:1.2;margin-bottom:10px}
+.pt .sup{color:var(--mute);font-size:15px;margin-bottom:20px}
+.pt textarea{width:100%;min-height:150px;padding:16px;border-radius:14px;border:1px solid var(--line);background:rgba(77,30,22,.8);color:#fff;font:inherit;font-size:17px;line-height:1.4;resize:none}
+.pt textarea::placeholder{color:rgba(212,196,180,.55)}
+.pt .meta{display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin:8px 2px 18px}
+.pt .btn.big{width:100%;padding:18px;font-size:14px}
+.pt .center{text-align:center}
+.pt .center h1{font-size:31px;margin-top:18px}
+.pt .center p{color:var(--mute);font-size:16px;margin-top:10px}
+.pt .ring{width:84px;height:84px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto;color:var(--gold);font-size:34px;animation:pop .8s both}
+.pt .wait{display:inline-flex;gap:8px;align-items:center;margin-top:26px;font-size:11.5px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
+.pt footer{text-align:center;font-size:10.5px;letter-spacing:.14em;color:var(--mute);opacity:.7;padding-top:16px;text-transform:uppercase}
+.pt .err{color:#F6D27A;font-size:13px;margin-top:10px;text-align:center}
+
+@media (max-width:1720px){.chips .chip.opt2{display:none}}
+@media (max-width:1480px){.brand{display:none}.nav{justify-content:flex-start}}
+@media (max-width:1180px){.chips .chip.opt{display:none}}
+@media (max-width:1100px){
+  .nav{flex-wrap:wrap}.kpis{grid-template-columns:repeat(2,1fr)}.grid3,.grid2{grid-template-columns:1fr}
+}
+@media (max-width:820px){
+  body{overflow:auto}
+  .qv{grid-template-columns:1fr;overflow:auto;align-items:start}.ins{grid-template-columns:1fr;grid-template-rows:auto;overflow:auto}
+  .chips .chip.opt{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important;transition-duration:.01s!important}}
+
+q{quotes:none}q::before,q::after{content:none}
+.stage.isdemo .view{padding-top:clamp(42px,5.4vh,60px)}
+.wm{top:9px}
+@media (max-width:1480px){.btn{padding:9px 11px;font-size:10.5px;letter-spacing:.09em}.btn.big{padding:16px 36px;font-size:13px;letter-spacing:.26em}.ctrl{gap:6px;padding:9px 12px}.qpill{padding:8px 10px;font-size:10.5px;letter-spacing:.09em}}
+
+
+/* ---------- LippoLand additions ---------- */
+.accentbar{position:fixed;left:0;right:0;top:0;height:calc(4px + env(safe-area-inset-top,0px));background:var(--goldbg);z-index:40;pointer-events:none}
+.top{border-top:4px solid transparent}
+.brandline{font-size:clamp(10px,.85vw,14px);letter-spacing:.34em;color:var(--mute);text-transform:uppercase;font-weight:700;margin-bottom:2.6vh;animation:rise 1.4s both}
+.brandline b{color:var(--gold);font-weight:800}
+.noqr{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;color:#60261C;font-weight:700;font-size:15px;line-height:1.45;padding:14px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:10px 0}
+.kv span:nth-child(odd){color:var(--mute);letter-spacing:.08em;text-transform:uppercase;font-size:11px;padding-top:2px}
+.kv span:nth-child(even){color:var(--white);word-break:break-all;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+/* participant phones: LippoLand cream content theme */
+body.part{--bg:#FBF7EC;--navy:#FFFFFF;--char:#FFFFFF;--gold:#B93A27;--goldbg:#F95A44;--gold2:#FF7A63;--white:#2B2A29;--mute:#6B6461;--line:rgba(96,38,28,.28);--line2:#E0DBD0;color-scheme:light;background:var(--bg);color:var(--white)}
+body.part .bgfx,body.part #sparks{display:none}
+body.part .pt header .b,body.part .pt h1{color:#60261C}
+body.part .pt header .m{color:var(--gold)}
+.pt header .ev{font-size:10.5px;letter-spacing:.24em;color:var(--mute);text-transform:uppercase;font-weight:700;margin-top:10px}
+body.part .pt textarea{background:#FFFFFF;color:#2B2A29;border-color:#E0DBD0}
+body.part .pt textarea:focus{border-color:var(--goldbg);outline:none;box-shadow:0 0 0 3px rgba(249,90,68,.2)}
+body.part .pt textarea::placeholder{color:#A09080}
+body.part .pt .prog i{background:#E0DBD0}
+body.part .pt .prog i.d{background:rgba(249,90,68,.45)}
+body.part .pt .prog i.c{background:var(--goldbg)}
+body.part .pt .err{color:#B3261E}
+body.part .pt .ring{border-color:var(--goldbg);color:var(--gold)}
+body.part .btn:disabled{color:#2B2A29}
+</style>
+</head>
+<body>
+<div class="accentbar"></div>
+<div class="bgfx"></div>
+<canvas id="sparks"></canvas>
+<div id="app" class="layer"></div>
+<script src="config.js"></script>
+<script>
+/* QR Code Generator for JavaScript — (c) Kazuhiko Arase, MIT License — https://github.com/kazuhikoarase/qrcode-generator */
+var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],f={},c=function(t,r){o=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(i=4*e+17),l(0,0),l(i-7,0),l(0,i-7),s(),h(),d(t,r),e>=7&&v(t),null==a&&(a=p(e,n,u)),w(a,r)},l=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||i<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||i<=r+n||(o[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},h=function(){for(var t=8;t<i-8;t+=1)null==o[t][6]&&(o[t][6]=t%2==0);for(var r=8;r<i-8;r+=1)null==o[6][r]&&(o[6][r]=r%2==0)},s=function(){for(var t=B.getPatternPosition(e),r=0;r<t.length;r+=1)for(var n=0;n<t.length;n+=1){var i=t[r],a=t[n];if(null==o[i][a])for(var u=-2;u<=2;u+=1)for(var f=-2;f<=2;f+=1)o[i+u][a+f]=-2==u||2==u||-2==f||2==f||0==u&&0==f}},v=function(t){for(var r=B.getBCHTypeNumber(e),n=0;n<18;n+=1){var a=!t&&1==(r>>n&1);o[Math.floor(n/3)][n%3+i-8-3]=a}for(n=0;n<18;n+=1){a=!t&&1==(r>>n&1);o[n%3+i-8-3][Math.floor(n/3)]=a}},d=function(t,r){for(var e=n<<3|r,a=B.getBCHTypeInfo(e),u=0;u<15;u+=1){var f=!t&&1==(a>>u&1);u<6?o[u][8]=f:u<8?o[u+1][8]=f:o[i-15+u][8]=f}for(u=0;u<15;u+=1){f=!t&&1==(a>>u&1);u<8?o[8][i-u-1]=f:u<9?o[8][15-u-1+1]=f:o[8][15-u-1]=f}o[i-8][8]=!t},w=function(t,r){for(var e=-1,n=i-1,a=7,u=0,f=B.getMaskFunction(r),c=i-1;c>0;c-=2)for(6==c&&(c-=1);;){for(var g=0;g<2;g+=1)if(null==o[n][c-g]){var l=!1;u<t.length&&(l=1==(t[u]>>>a&1)),f(n,c-g)&&(l=!l),o[n][c-g]=l,-1==(a-=1)&&(u+=1,a=7)}if((n+=e)<0||i<=n){n-=e,e=-e;break}}},p=function(t,r,e){for(var n=A.getRSBlocks(t,r),o=b(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=k(i[u],l.getLength()-1).mod(l);for(a[u]=new Array(l.getLength()-1),g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=s>=0?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};f.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=M(t);break;case"Alphanumeric":e=x(t);break;case"Byte":e=m(t);break;case"Kanji":e=L(t);break;default:throw"mode:"+r}u.push(e),a=null},f.isDark=function(t,r){if(t<0||i<=t||r<0||i<=r)throw t+","+r;return o[t][r]},f.getModuleCount=function(){return i},f.make=function(){if(e<1){for(var t=1;t<40;t++){for(var r=A.getRSBlocks(t,n),o=b(),i=0;i<u.length;i++){var a=u[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var g=0;for(i=0;i<r.length;i++)g+=r[i].dataCount;if(o.getLengthInBits()<=8*g)break}e=t}c(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){c(!0,e);var n=B.getLostPoint(f);(0==e||t>n)&&(t=n,r=e)}return r}())},f.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<f.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<f.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=f.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},f.createSvgTag=function(t,r,e,n){var o={};"object"==typeof arguments[0]&&(t=(o=arguments[0]).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,c,g=f.getModuleCount()*t+2*r,l="";for(c="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",l+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',l+=o.scalable?"":' width="'+g+'px" height="'+g+'px"',l+=' viewBox="0 0 '+g+" "+g+'" ',l+=' preserveAspectRatio="xMinYMin meet"',l+=n.text||e.text?' role="img" aria-labelledby="'+y([n.id,e.id].join(" ").trim())+'"':"",l+=">",l+=n.text?'<title id="'+y(n.id)+'">'+y(n.text)+"</title>":"",l+=e.text?'<description id="'+y(e.id)+'">'+y(e.text)+"</description>":"",l+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',l+='<path d="',a=0;a<f.getModuleCount();a+=1)for(u=a*t+r,i=0;i<f.getModuleCount();i+=1)f.isDark(a,i)&&(l+="M"+(i*t+r)+","+u+c);return l+='" stroke="transparent" fill="black"/>',l+="</svg>"},f.createDataURL=function(t,r){t=t||2,r=void 0===r?4*t:r;var e=f.getModuleCount()*t+2*r,n=r,o=e-r;return I(e,e,function(r,e){if(n<=r&&r<o&&n<=e&&e<o){var i=Math.floor((r-n)/t),a=Math.floor((e-n)/t);return f.isDark(a,i)?0:1}return 1})},f.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=f.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=f.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=y(e),o+='"'),o+="/>"};var y=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return f.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*f.getModuleCount()+2*t,u=t,c=a-t,g={"██":"█","█ ":"▀"," █":"▄","  ":" "},l={"██":"▀","█ ":"▀"," █":" ","  ":" "},h="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<c&&u<=r&&r<c&&f.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<c&&u<=r+1&&r+1<c&&f.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",h+=t<1&&r+1>=c?l[i]:g[i];h+="\n"}return a%2&&t>0?h.substring(0,h.length-a-1)+Array(a+1).join("▀"):h.substring(0,h.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=f.getModuleCount()*t+2*r,u=r,c=a-r,g=Array(t+1).join("██"),l=Array(t+1).join("  "),h="",s="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),s="",n=0;n<a;n+=1)i=1,u<=n&&n<c&&u<=e&&e<c&&f.isDark(o,Math.floor((n-u)/t))&&(i=0),s+=i?g:l;for(o=0;o<t;o+=1)h+=s+"\n"}return h.substring(0,h.length-1)},f.renderTo2dContext=function(t,r){r=r||2;for(var e=f.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=f.isDark(n,o)?"black":"white",t.fillRect(o*r,n*r,r,r)},f};t.stringToBytes=(t.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,t.createStringToBytes=function(t,r){var e=function(){for(var e=S(t),n=function(){var t=e.read();if(-1==t)throw"eof";return t},o=0,i={};;){var a=e.read();if(-1==a)break;var u=n(),f=n()<<8|n();i[String.fromCharCode(a<<8|u)]=f,o+=1}if(o!=r)throw o+" != "+r;return i}(),n="?".charCodeAt(0);return function(t){for(var r=[],o=0;o<t.length;o+=1){var i=t.charCodeAt(o);if(i<128)r.push(i);else{var a=e[t.charAt(o)];"number"==typeof a?(255&a)==a?r.push(a):(r.push(a>>>8),r.push(255&a)):r.push(n)}}return r}};var r,e,n,o,i,a=1,u=2,f=4,c=8,g={L:1,M:0,Q:3,H:2},l=0,h=1,s=2,v=3,d=4,w=5,p=6,y=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],e=1335,n=7973,i=function(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r},(o={}).getBCHTypeInfo=function(t){for(var r=t<<10;i(r)-i(e)>=0;)r^=e<<i(r)-i(e);return 21522^(t<<10|r)},o.getBCHTypeNumber=function(t){for(var r=t<<12;i(r)-i(n)>=0;)r^=n<<i(r)-i(n);return t<<12|r},o.getPatternPosition=function(t){return r[t-1]},o.getMaskFunction=function(t){switch(t){case l:return function(t,r){return(t+r)%2==0};case h:return function(t,r){return t%2==0};case s:return function(t,r){return r%3==0};case v:return function(t,r){return(t+r)%3==0};case d:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case w:return function(t,r){return t*r%2+t*r%3==0};case p:return function(t,r){return(t*r%2+t*r%3)%2==0};case y:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},o.getErrorCorrectPolynomial=function(t){for(var r=k([1],0),e=0;e<t;e+=1)r=r.multiply(k([1,C.gexp(e)],0));return r},o.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case f:case c:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case f:return 16;case c:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case f:return 16;case c:return 12;default:throw"mode:"+t}}},o.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);i>5&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},o),C=function(){for(var t=new Array(256),r=new Array(256),e=0;e<8;e+=1)t[e]=1<<e;for(e=8;e<256;e+=1)t[e]=t[e-4]^t[e-5]^t[e-6]^t[e-8];for(e=0;e<255;e+=1)r[t[e]]=e;var n={glog:function(t){if(t<1)throw"glog("+t+")";return r[t]},gexp:function(r){for(;r<0;)r+=255;for(;r>=256;)r-=255;return t[r]}};return n}();function k(t,r){if(void 0===t.length)throw t.length+"/"+r;var e=function(){for(var e=0;e<t.length&&0==t[e];)e+=1;for(var n=new Array(t.length-e+r),o=0;o<t.length-e;o+=1)n[o]=t[o+e];return n}(),n={getAt:function(t){return e[t]},getLength:function(){return e.length},multiply:function(t){for(var r=new Array(n.getLength()+t.getLength()-1),e=0;e<n.getLength();e+=1)for(var o=0;o<t.getLength();o+=1)r[e+o]^=C.gexp(C.glog(n.getAt(e))+C.glog(t.getAt(o)));return k(r,0)},mod:function(t){if(n.getLength()-t.getLength()<0)return n;for(var r=C.glog(n.getAt(0))-C.glog(t.getAt(0)),e=new Array(n.getLength()),o=0;o<n.getLength();o+=1)e[o]=n.getAt(o);for(o=0;o<t.getLength();o+=1)e[o]^=C.gexp(C.glog(t.getAt(o))+r);return k(e,0).mod(t)}};return n}var A=function(){var t=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],r=function(t,r){var e={};return e.totalCount=t,e.dataCount=r,e},e={};return e.getRSBlocks=function(e,n){var o=function(r,e){switch(e){case g.L:return t[4*(r-1)+0];case g.M:return t[4*(r-1)+1];case g.Q:return t[4*(r-1)+2];case g.H:return t[4*(r-1)+3];default:return}}(e,n);if(void 0===o)throw"bad rs block @ typeNumber:"+e+"/errorCorrectionLevel:"+n;for(var i=o.length/3,a=[],u=0;u<i;u+=1)for(var f=o[3*u+0],c=o[3*u+1],l=o[3*u+2],h=0;h<f;h+=1)a.push(r(c,l));return a},e}(),b=function(){var t=[],r=0,e={getBuffer:function(){return t},getAt:function(r){var e=Math.floor(r/8);return 1==(t[e]>>>7-r%8&1)},put:function(t,r){for(var n=0;n<r;n+=1)e.putBit(1==(t>>>r-n-1&1))},getLengthInBits:function(){return r},putBit:function(e){var n=Math.floor(r/8);t.length<=n&&t.push(0),e&&(t[n]|=128>>>r%8),r+=1}};return e},M=function(t){var r=a,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+2<r.length;)t.put(o(r.substring(n,n+3)),10),n+=3;n<r.length&&(r.length-n==1?t.put(o(r.substring(n,n+1)),4):r.length-n==2&&t.put(o(r.substring(n,n+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return n},x=function(t){var r=u,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+1<r.length;)t.put(45*o(r.charAt(n))+o(r.charAt(n+1)),11),n+=2;n<r.length&&t.put(o(r.charAt(n)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return n},m=function(r){var e=f,n=t.stringToBytes(r),o={getMode:function(){return e},getLength:function(t){return n.length},write:function(t){for(var r=0;r<n.length;r+=1)t.put(n[r],8)}};return o},L=function(r){var e=c,n=t.stringToBytesFuncs.SJIS;if(!n)throw"sjis not supported.";!function(){var t=n("友");if(2!=t.length||38726!=(t[0]<<8|t[1]))throw"sjis not supported."}();var o=n(r),i={getMode:function(){return e},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return i},D=function(){var t=[],r={writeByte:function(r){t.push(255&r)},writeShort:function(t){r.writeByte(t),r.writeByte(t>>>8)},writeBytes:function(t,e,n){e=e||0,n=n||t.length;for(var o=0;o<n;o+=1)r.writeByte(t[o+e])},writeString:function(t){for(var e=0;e<t.length;e+=1)r.writeByte(t.charCodeAt(e))},toByteArray:function(){return t},toString:function(){var r="";r+="[";for(var e=0;e<t.length;e+=1)e>0&&(r+=","),r+=t[e];return r+="]"}};return r},S=function(t){var r=t,e=0,n=0,o=0,i={read:function(){for(;o<8;){if(e>=r.length){if(0==o)return-1;throw"unexpected end of file./"+o}var t=r.charAt(e);if(e+=1,"="==t)return o=0,-1;t.match(/^\s$/)||(n=n<<6|a(t.charCodeAt(0)),o+=6)}var i=n>>>o-8&255;return o-=8,i}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return i},I=function(t,r,e){for(var n=function(t,r){var e=t,n=r,o=new Array(t*r),i={setPixel:function(t,r,n){o[r*e+t]=n},write:function(t){t.writeString("GIF87a"),t.writeShort(e),t.writeShort(n),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(e),t.writeShort(n),t.writeByte(0);var r=a(2);t.writeByte(2);for(var o=0;r.length-o>255;)t.writeByte(255),t.writeBytes(r,o,255),o+=255;t.writeByte(r.length-o),t.writeBytes(r,o,r.length-o),t.writeByte(0),t.writeString(";")}},a=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,i=u(),a=0;a<r;a+=1)i.add(String.fromCharCode(a));i.add(String.fromCharCode(r)),i.add(String.fromCharCode(e));var f,c,g,l=D(),h=(f=l,c=0,g=0,{write:function(t,r){if(t>>>r!=0)throw"length over";for(;c+r>=8;)f.writeByte(255&(t<<c|g)),r-=8-c,t>>>=8-c,g=0,c=0;g|=t<<c,c+=r},flush:function(){c>0&&f.writeByte(g)}});h.write(r,n);var s=0,v=String.fromCharCode(o[s]);for(s+=1;s<o.length;){var d=String.fromCharCode(o[s]);s+=1,i.contains(v+d)?v+=d:(h.write(i.indexOf(v),n),i.size()<4095&&(i.size()==1<<n&&(n+=1),i.add(v+d)),v=d)}return h.write(i.indexOf(v),n),h.write(e,n),h.flush(),l.toByteArray()},u=function(){var t={},r=0,e={add:function(n){if(e.contains(n))throw"dup key:"+n;t[n]=r,r+=1},size:function(){return r},indexOf:function(r){return t[r]},contains:function(r){return void 0!==t[r]}};return e};return i}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=D();n.write(a);for(var u=function(){var t=0,r=0,e=0,n="",o={},i=function(t){n+=String.fromCharCode(a(63&t))},a=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return o.writeByte=function(n){for(t=t<<8|255&n,r+=8,e+=1;r>=6;)i(t>>>r-6),r-=6},o.flush=function(){if(r>0&&(i(t<<6-r),t=0,r=0),e%3!=0)for(var o=3-e%3,a=0;a<o;a+=1)n+="="},o.toString=function(){return n},o}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return t}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||n>=57344?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}(function(){return qrcode});
+</script>
+<script>
+'use strict';
+/* =====================================================================
+   LEADERSHIP VOICE — LippoLand Leadership Offsite 2026 · GITHUB PAGES edition
+   This page (index.html + config.js) is hosted on GitHub Pages.
+     phones      : the page address                         -> no login
+     host screen : the page address + ?view=host&key=...    -> link from the Google Sheet menu
+   Data goes to the Google Sheet through the Apps Script web app in config.js (LV_API).
+   Calls are made WITHOUT the visitor's Google login (credentials: 'omit'), so phones
+   signed in to several or company Google accounts work normally.
+   Opened as a local file without config.js, the page runs in single-device LOCAL mode.
+   ===================================================================== */
+const CONFIG = {
+  maxChars: 300,
+  minForInsight: 5
+};
+const API = (typeof window.LV_API === 'string' && /^https:\/\/script\.google(usercontent)?\.com\/\S+$/.test(window.LV_API.trim())) ? window.LV_API.trim() : '';
+const GAS = !!API;
+let HOSTKEY = '';
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function apiCall(method, payload) {
+  const opt = { method, credentials: 'omit', cache: 'no-store', redirect: 'follow' };
+  let url = API;
+  if (method === 'GET') url += '?' + new URLSearchParams(Object.assign({}, payload, { _: Date.now() })).toString();
+  else { opt.headers = { 'Content-Type': 'text/plain;charset=utf-8' }; opt.body = JSON.stringify(payload); }
+  const r = await fetch(url, opt);
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  let j; try { j = await r.json(); } catch (e) { throw new Error('The Apps Script web app did not answer with data. Check its deployment (Anyone).'); }
+  if (j && j.error) throw new Error(j.error);
+  return j;
+}
+/* same call names as the Apps Script functions */
+const gs = (fn, ...a) => {
+  switch (fn) {
+    case 'getState': return apiCall('GET', { api: 'state', pid: a[0] || '' });
+    case 'getAll': return apiCall('GET', { api: 'all', key: a[0] || '', from: a[1] || 1 });
+    case 'info': return apiCall('GET', { api: 'info', key: a[0] || '' });
+    case 'submit': return apiCall('POST', { api: 'submit', pid: a[0], q: a[1], t: a[2], ep: a[3] });
+    case 'join': return apiCall('POST', { api: 'join', pid: a[0], sid: a[1] });
+    case 'setState': return apiCall('POST', { api: 'setState', key: a[0], state: a[1] });
+  }
+  return Promise.reject(new Error('unknown call ' + fn));
+};
+
+/* ---------- helpers ---------- */
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const rid = n => Array.from(crypto.getRandomValues(new Uint8Array(n || 10)), b => 'abcdefghjkmnpqrstuvwxyz23456789'[b % 31]).join('');
+const ls = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+const titleCase = s => s.toLowerCase().replace(/(^|[\s&-])([a-z])/g, (m, a, b) => a + b.toUpperCase());
+const joinAnd = a => a.length < 2 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+
+/* ---------- theme library (keyword-based analysis) ----------
+   l = label, d = description, n = noun phrase, a = action phrase, g = legacy phrase, k = keywords
+   keyword ending with "|" must match as a whole word; others match from the start of a word. */
+const TH = {
+  integrity: { l: 'TRUST & INTEGRITY', d: 'Being honest, trustworthy and true to one’s word.', n: 'integrity that earns trust', a: 'building trust', g: 'trust that was earned',
+    k: ['trust', 'percaya|', 'kepercayaan', 'dipercaya', 'mempercayai', 'integrit', 'jujur', 'kejujuran', 'honest', 'etika', 'ethic', 'tulus', 'menepati', 'dipegang', 'apa adanya'] },
+  listening: { l: 'LISTENING & EMPATHY', d: 'Listening first, understanding people and staying open to input.', n: 'the willingness to listen', a: 'listening more', g: 'people who felt heard',
+    k: ['listen', 'dengar', 'mendengar', 'didengar', 'empati', 'berempati', 'empath', 'memahami', 'understand', 'mengerti', 'bersuara', 'terhadap masukan', 'menerima masukan', 'open to feedback', 'talk less'] },
+  communication: { l: 'CLEAR COMMUNICATION', d: 'Communicating clearly, openly and transparently.', n: 'clear and open communication', a: 'communicating more clearly', g: 'honest conversations',
+    k: ['komunik', 'communic', 'clearly', 'clarity', 'transparan', 'transparen', 'transparansi', 'terbuka|', 'menjelaskan', 'ditutup'] },
+  feedback: { l: 'COACHING & FEEDBACK', d: 'Guiding people through coaching, mentoring and honest feedback.', n: 'honest coaching and feedback', a: 'coaching and giving feedback', g: 'mentorship that shaped careers',
+    k: ['coach', 'mentor', 'feedback', 'umpan balik', 'membimbing', 'bimbing', 'dibimbing', 'membina', 'mengajar', 'teach', 'taught', 'memberi masukan', '1-on-1', 'one-on-one', 'one on one'] },
+  development: { l: 'PEOPLE DEVELOPMENT', d: 'Helping people learn, grow and reach their potential.', n: 'a commitment to developing people', a: 'developing our people', g: 'people who grew',
+    k: ['develop', 'kembang', 'mengembangkan', 'berkembang', 'pengembangan', 'grow', 'grew', 'tumbuh', 'bertumbuh', 'potensi', 'potential', 'karir', 'karier', 'career', 'kompetensi', 'skill', 'next role', 'peran berikutnya', 'bigger role', 'naik kelas', 'and learn'] },
+  successors: { l: 'DEVELOPING FUTURE LEADERS', d: 'Preparing successors and the next generation of leaders.', n: 'preparing the next leaders', a: 'preparing future leaders', g: 'leaders who were prepared',
+    k: ['successor', 'suksesor', 'penerus', 'pengganti', 'kader', 'future leader', 'calon pemimpin', 'calon leader', 'pemimpin berikutnya', 'pemimpin masa depan', 'next leader', 'regenerasi', 'into a leader', 'menyiapkan saya'] },
+  empowerment: { l: 'EMPOWERMENT & DELEGATION', d: 'Trusting people with responsibility, room and opportunity.', n: 'the courage to empower others', a: 'delegating and empowering', g: 'opportunities that were opened',
+    k: ['empower', 'memberdayakan', 'pemberdayaan', 'delegat', 'delegas', 'mendelegasi', 'kesempatan', 'opportunit', 'peluang', 'ruang|', 'room to', 'memberi kepercayaan', 'trusted me', 'trusts them', 'otonomi', 'autonomy', 'percaya pada tim', 'membuka jalan'] },
+  accountability: { l: 'ACCOUNTABILITY & OWNERSHIP', d: 'Owning decisions, results and commitments.', n: 'ownership and accountability', a: 'holding ourselves accountable', g: 'a sense of responsibility passed on',
+    k: ['accountab', 'akuntab', 'tanggung jawab', 'bertanggung', 'responsib', 'ownership', 'komitmen', 'commitment', 'menyalahkan', 'amanah'] },
+  example: { l: 'LEADING BY EXAMPLE', d: 'Modelling the standards expected of others.', n: 'leading by example', a: 'leading by example', g: 'an example worth following',
+    k: ['example', 'teladan', 'keteladanan', 'role model', 'panutan', 'menjadi contoh', 'memberi contoh', 'walk the talk', 'ucapan dan tindakan', 'turun tangan', 'seperti beliau'] },
+  caring: { l: 'CARE FOR PEOPLE', d: 'Showing genuine care, respect and appreciation.', n: 'genuine care for people', a: 'caring for our people', g: 'people who felt valued',
+    k: ['care|', 'cares|', 'cared|', 'caring', 'peduli', 'kepedulian', 'perhati', 'menghargai', 'dihargai', 'apresiasi', 'mengapresiasi', 'appreciat', 'respect', 'hormat', 'mengayomi', 'membela', 'dengan hati', 'manusia', 'kesejahteraan', 'valued', 'aman|'] },
+  fairness: { l: 'FAIRNESS & CONSISTENCY', d: 'Treating everyone fairly and acting consistently.', n: 'fairness and consistency', a: 'being fair and consistent', g: 'fairness people remember',
+    k: ['fair', 'adil', 'keadilan', 'objektif', 'objective', 'konsisten', 'consisten', 'pilih kasih'] },
+  vision: { l: 'VISION & STRATEGIC THINKING', d: 'Setting direction and thinking beyond day-to-day operations.', n: 'clear direction', a: 'thinking more strategically', g: 'a sense of direction',
+    k: ['visi|', 'vision', 'strateg', 'memberi arah', 'direction', 'big picture', 'prioritas', 'priorit', 'jangka panjang', 'long term', 'long-term'] },
+  courage: { l: 'COURAGE & DECISIVENESS', d: 'Making and owning difficult decisions.', n: 'the courage to decide', a: 'deciding with courage', g: 'courage that was modelled',
+    k: ['berani', 'courage', 'tegas', 'decisive', 'keputusan sulit', 'keputusan lebih', 'tough decision', 'hard decision', 'better decision', 'faster decision'] },
+  inspiration: { l: 'INSPIRATION & POSITIVE INFLUENCE', d: 'Energising and motivating people to give their best.', n: 'the ability to inspire', a: 'inspiring our teams', g: 'inspiration that lasts',
+    k: ['inspir', 'motivat', 'motivasi', 'memotivasi', 'semangat', 'positif', 'positive', 'pengaruh', 'influence', 'made a difference', 'berkesan', 'seperti beliau'] },
+  growthm: { l: 'GROWTH MINDSET', d: 'Continuing to learn, adapt and improve.', n: 'a willingness to keep learning', a: 'continuing to learn', g: 'a love of learning',
+    k: ['growth mindset', 'terus belajar', 'belajar dari', 'keep learning', 'adapt', 'inovasi', 'berinovasi', 'innovat', 'memperbaiki diri', 'hal baru', 'hal-hal baru', 'perubahan'] },
+  collaboration: { l: 'COLLABORATION', d: 'Working across teams and breaking silos.', n: 'collaboration across teams', a: 'collaborating across teams', g: 'a spirit of collaboration',
+    k: ['kolabor', 'collab', 'kerja sama', 'kerjasama', 'teamwork', 'sinergi', 'silo', 'lintas divisi', 'divisi lain'] },
+  presence: { l: 'TIME WITH THE TEAM', d: 'Being present, close and available to the team.', n: 'presence with the team', a: 'being present with our teams', g: 'time that was given',
+    k: ['meluangkan waktu', 'ada waktu', 'waktu lebih', 'waktu bersama', 'time with', 'more time', 'hadir', 'lapangan', 'dekat dengan', 'check-in', 'check in'] },
+  confidence: { l: 'CONFIDENCE & BELIEF', d: 'Believing in people and stretching them to be more.', n: 'belief in people', a: 'building confidence', g: 'confidence that was given',
+    k: ['believ', 'percaya diri', 'confiden', 'yakin', 'menantang', 'challeng', 'berani'] },
+  discipline: { l: 'EXECUTION & DISCIPLINE', d: 'Following through with discipline and consistency.', n: 'disciplined execution', a: 'executing with discipline', g: 'a standard of discipline',
+    k: ['disiplin', 'discipline', 'eksekusi', 'execut', 'follow up', 'follow-up', 'tindak lanjut', 'tuntas', 'tepat waktu', 'ketepatan waktu'] }
+};
+Object.keys(TH).forEach(id => {
+  TH[id].re = TH[id].k.map(k => {
+    const exact = k.endsWith('|'); const w = (exact ? k.slice(0, -1) : k).replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+');
+    return new RegExp('(?:^|[^a-z0-9])' + w + (exact ? '(?![a-z0-9])' : ''));
+  });
+});
+
+/* ---------- the three questions ---------- */
+const QS = [
+  { key: 'q1', no: '01', tag: 'LEADERSHIP PERCEPTION', title: 'WHAT DEFINES A GOOD LEADER?', flow: 'WHAT MAKES A GOOD LEADER?',
+    q: 'Menurut Anda, leader yang baik itu seperti apa?',
+    sub: 'Pola pikir, gaya komunikasi, dan perilaku seperti apa yang seharusnya dimiliki dan ditunjukkan oleh seorang leader?',
+    t5: 'TOP 5 LEADERSHIP THEMES', insT: 'LEADERSHIP INSIGHT',
+    transition: 'Leadership is not only about what we believe. It is about what people experience through us.',
+    dims: ['MINDSET', 'COMMUNICATION', 'BEHAVIOR'],
+    themes: [['integrity', 'MINDSET'], ['accountability', 'MINDSET'], ['vision', 'MINDSET'], ['growthm', 'MINDSET'], ['listening', 'COMMUNICATION'], ['communication', 'COMMUNICATION'], ['feedback', 'COMMUNICATION'],
+      ['example', 'BEHAVIOR'], ['development', 'BEHAVIOR'], ['successors', 'BEHAVIOR'], ['empowerment', 'BEHAVIOR'], ['fairness', 'BEHAVIOR'], ['courage', 'BEHAVIOR'], ['caring', 'BEHAVIOR'], ['inspiration', 'BEHAVIOR'], ['collaboration', 'BEHAVIOR'], ['discipline', 'BEHAVIOR']] },
+  { key: 'q2', no: '02', tag: 'LEADERSHIP LEGACY', title: 'WHAT WILL YOUR TEAM REMEMBER?', flow: 'WHAT WILL YOUR TEAM REMEMBER ABOUT YOU?',
+    q: 'Ketika anggota tim Anda “lulus” dari tim Anda, apa yang akan mereka katakan tentang Anda?',
+    sub: 'Apa yang akan mereka ingat, pelajari, dan rasakan setelah bekerja bersama Anda?',
+    t5: 'TOP 5 LEGACY THEMES', insT: 'LEADERSHIP LEGACY INSIGHT',
+    transition: 'Leadership is temporary. The impact we leave on people can last much longer.',
+    dims: null,
+    themes: [['development', null, 'GROWTH & DEVELOPMENT'], ['feedback', null, 'MENTORSHIP & COACHING'], ['integrity'], ['caring'], ['inspiration'], ['confidence'], ['empowerment', null, 'OPPORTUNITY & EMPOWERMENT'], ['example'], ['listening'], ['fairness'], ['successors'], ['accountability']] },
+  { key: 'q3', no: '03', tag: 'LEADERSHIP COMMITMENT 2027', title: 'OUR LEADERSHIP COMMITMENT FOR 2027', flow: 'WHAT WILL YOU DO DIFFERENTLY IN 2027?',
+    q: 'Apa yang akan Anda lakukan secara berbeda di tahun 2027 agar lebih baik dalam menjalankan amanah sebagai leader?',
+    sub: 'Perubahan nyata apa yang akan Anda lakukan dalam cara memimpin, mengembangkan tim, dan memberikan dampak?',
+    t5: 'TOP 5 COMMITMENTS', insT: 'COLLECTIVE LEADERSHIP COMMITMENT',
+    transition: 'Reflection becomes meaningful only when it leads to action.',
+    dims: ['MINDSET', 'BEHAVIOR', 'COMMUNICATION', 'TEAM DEVELOPMENT', 'EXECUTION'],
+    themes: [['listening', 'COMMUNICATION', 'LISTENING MORE'], ['communication', 'COMMUNICATION', 'BETTER COMMUNICATION'], ['feedback', 'TEAM DEVELOPMENT'], ['empowerment', 'BEHAVIOR', 'DELEGATION & EMPOWERMENT'],
+      ['successors', 'TEAM DEVELOPMENT'], ['development', 'TEAM DEVELOPMENT'], ['accountability', 'EXECUTION'], ['presence', 'BEHAVIOR'], ['integrity', 'BEHAVIOR', 'BUILDING TRUST'],
+      ['collaboration', 'BEHAVIOR'], ['vision', 'MINDSET', 'STRATEGIC THINKING'], ['discipline', 'EXECUTION'], ['example', 'BEHAVIOR'], ['courage', 'EXECUTION', 'BETTER DECISION-MAKING'], ['growthm', 'MINDSET'], ['caring', 'BEHAVIOR']] }
+];
+
+/* ---------- text analysis ---------- */
+const STOP = new Set(('yang dan di ke dari untuk dengan saya adalah itu ini pada dalam akan tidak juga atau karena sebagai oleh agar supaya bisa dapat lebih harus seorang orang mereka kita kami anda ada serta bagi para seperti apa saat ketika jadi menjadi hal secara setiap tiap sangat selalu hanya tetapi tapi namun sudah telah belum masih lagi saja pun nya mau ingin punya memiliki mempunyai membuat memberi memberikan melakukan mampu bukan sampai siap atas antara semua tetap terus sendiri diri beliau dia ia aku kamu dll yg dgn utk tdk kepada terhadap banyak sering sebelum sesudah setelah selama lewat suatu nanti hari pernah bagaimana kali cara baik ' +
+  'tim team teams anggota leader leaders leadership pemimpin memimpin kepemimpinan lead leads leading led people person someone somebody ' +
+  'the a an and is are to of in for with who that my me i be more by on their they them it as at not but or from was were will would can could should has have had his her he she you your our we us this those these when what how about into than also just very do does did make makes made being become becomes get gets give gives gave able always every each one way through before myself himself less most much many really ever real through during there here been its helped help helps mengambil sulit hasil bekerja baru berikutnya ditutup tutupi divisi berpikir mencoba merasa memegang menuntut kondisi perintah pekerjaan karyawan proyek besar posisi urusan kerjakan kata arti alasan gagal dekat paling miliki kira dengannya bersamanya bersama lain tahu perlu rapat kesalahan membantu menjalankan memperbaiki membangun mengurangi terbaik pengalaman standar kerja tinggi operasional tenggelam pencapaian beban kendala individu dua sekali seminggu minggu bulan kuartal sesi appraisal tuntas minimal tahun cepat jelas saat target lapangan mau everyone actively builds build takes take treats treat deliver mistakes room really something thing things time toughest year role next better best good effectively results talk fixing spend intentional difference').split(/\s+/));
+const PHRASES = [[/\b(bertanggung|tanggung)\s+jawab\b/g, 'tanggung_jawab'], [/\blead(s|ing)?\s+by\s+example\b/g, 'lead_by_example'], [/\brole\s+models?\b/g, 'role_model'],
+  [/\bumpan\s+balik\b/g, 'feedback'], [/\bkerja\s+sama\b/g, 'kerjasama'], [/\bfuture\s+leaders?\b/g, 'future_leaders'], [/\b(1|one)[\s-]on[\s-](1|one)\b/g, 'one_on_one'],
+  [/\bpercaya\s+diri\b/g, 'percaya_diri'], [/\bgrowth\s+mindset\b/g, 'growth_mindset'], [/\bpilih\s+kasih\b/g, 'pilih_kasih'], [/\bcheck[\s-]in\b/g, 'check_in'], [/\bfollow[\s-]up\b/g, 'follow_up']];
+const LEMMA = {};
+[['listening', 'listen listens listened'], ['mendengarkan', 'mendengar dengar didengar'], ['trust', 'trusted trusts trusting'], ['kepercayaan', 'percaya dipercaya mempercayai'],
+  ['development', 'develop develops developing developed'], ['mengembangkan', 'berkembang pengembangan kembangkan'], ['growth', 'grow grows growing grew'], ['bertumbuh', 'tumbuh pertumbuhan'],
+  ['communication', 'communicate communicates communicating'], ['komunikasi', 'berkomunikasi komunikatif komunikasinya'], ['empowerment', 'empower empowers empowering empowered'],
+  ['coaching', 'coach coaches coached'], ['delegation', 'delegate delegates delegating'], ['delegasi', 'mendelegasikan'], ['inspiration', 'inspire inspires inspired inspiring'],
+  ['inspirasi', 'menginspirasi inspiratif'], ['accountability', 'accountable'], ['integritas', 'berintegritas'], ['jujur', 'kejujuran'], ['adil', 'keadilan'], ['peduli', 'kepedulian'],
+  ['teladan', 'keteladanan teladannya'], ['empati', 'berempati'], ['empathy', 'empathetic'], ['caring', 'care cares cared'], ['fairness', 'fair fairly'], ['honesty', 'honest'],
+  ['mentoring', 'mentor mentors mentored'], ['membimbing', 'bimbingan dibimbing'], ['learning', 'learn learns learned'], ['consistency', 'consistent'], ['konsisten', 'konsistensi'],
+  ['transparency', 'transparent'], ['transparan', 'transparansi'], ['responsibility', 'responsible'], ['decision', 'decisions'], ['opportunity', 'opportunities'], ['believe', 'believed believes'],
+  ['challenge', 'challenged challenges'], ['komitmen', 'berkomitmen'], ['kolaborasi', 'berkolaborasi'], ['menghargai', 'dihargai'], ['inovasi', 'berinovasi'], ['strategic', 'strategically'], ['strategis', 'strategi'],
+  ['motivasi', 'memotivasi'], ['karir', 'karier']].forEach(([c, v]) => v.split(' ').forEach(x => LEMMA[x] = c));
+const DISPLAY = { one_on_one: '1-ON-1' };
+/* leadership vocabulary: these words are favoured in the word cloud over incidental words */
+const LEX = new Set(('trust kepercayaan jujur integritas integrity terbuka konsisten tanggung_jawab teladan empati empathy peduli adil amanah visi vision berani tegas feedback coaching delegasi delegation komitmen commitment disiplin discipline kolaborasi collaboration inspirasi inspiration strategis strategic ownership transparan transparency growth development empowerment communication komunikasi mendengarkan listening mengembangkan bertumbuh caring fairness mentoring membimbing suksesor successor kesempatan opportunity percaya_diri lead_by_example role_model future_leaders one_on_one check_in follow_up growth_mindset mengayomi menghargai apresiasi keputusan decision belajar learning mentor karir career inovasi accountability responsibility courage respect clarity honesty consistency believe challenge motivasi contoh panutan penerus kader arah hati rendah menginspirasi memberdayakan mendelegasikan menyiapkan confidence coach humble masukan ruang waktu accountable empower pemimpin_berikutnya').split(' '));
+Object.keys(LEMMA).forEach(k => LEX.add(LEMMA[k]));
+function normText(t) { return String(t).toLowerCase().replace(/[‘’]/g, "'").replace(/[^a-z0-9\s-]/g, ' ').replace(/\s+/g, ' ').trim(); }
+function tokens(t) {
+  let s = normText(t); PHRASES.forEach(([re, to]) => s = s.replace(re, to));
+  const out = new Set();
+  s.replace(/-/g, ' ').split(' ').forEach(w => {
+    if (w.length < 3 || /^\d+$/.test(w) || STOP.has(w)) return;
+    if (w.length > 5 && w.endsWith('nya')) { w = w.slice(0, -3); if (w.length < 3 || STOP.has(w)) return; }
+    w = LEMMA[w] || w; if (!STOP.has(w)) out.add(w);
+  });
+  return out; // one count per response (document frequency)
+}
+const SPECIFIC = /(\d|minggu|weekly|bulan|monthly|harian|daily|setiap hari|kuartal|quarter|jadwal|schedule|minimal|at least|sesi\s|session|1-on-1|one-on-one|check-in|rencana pengembangan)/;
+const isSpecific = t => SPECIFIC.test(normText(t).replace(/\b20\d\d\b/g, ' '));
+function matchThemes(q, text) {
+  const s = ' ' + normText(text) + ' ';
+  return q.themes.filter(([id]) => TH[id].re.some(re => re.test(s))).map(([id]) => id);
+}
+function wordFreq(list) {
+  const m = new Map();
+  list.forEach(r => tokens(r.t).forEach(w => m.set(w, (m.get(w) || 0) + 1)));
+  let arr = Array.from(m, ([w, c]) => ({ w, c, lex: LEX.has(w), label: (DISPLAY[w] || w.replace(/_/g, ' ')).toUpperCase() }));
+  if (arr.filter(x => x.lex).length >= 12) arr = arr.filter(x => x.lex || x.c >= 2);
+  return arr.sort((a, b) => (b.c + (b.lex ? 0.5 : 0)) - (a.c + (a.lex ? 0.5 : 0)) || a.w.localeCompare(b.w));
+}
+function analyze(qi, list) {
+  const q = QS[qi], n = list.length, cnt = {}, dimSet = {}, per = [];
+  let unmatched = 0;
+  (q.dims || []).forEach(d => dimSet[d] = 0);
+  list.forEach(r => {
+    const ids = matchThemes(q, r.t); per.push({ r, ids, spec: qi === 2 && isSpecific(r.t) });
+    if (!ids.length) unmatched++;
+    ids.forEach(id => cnt[id] = (cnt[id] || 0) + 1);
+    const ds = new Set(ids.map(id => q.themes.find(t => t[0] === id)[1]).filter(Boolean));
+    ds.forEach(d => dimSet[d]++);
+  });
+  const themes = q.themes.map(([id, dim, lab]) => ({ id, dim, label: lab || TH[id].l, desc: TH[id].d, count: cnt[id] || 0, pct: n ? Math.round((cnt[id] || 0) / n * 100) : 0 }))
+    .filter(t => t.count > 0).sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+  const dims = (q.dims || []).map(d => ({ name: d, count: dimSet[d], pct: n ? Math.round(dimSet[d] / n * 100) : 0 }));
+  const words = wordFreq(list);
+  const specifics = per.filter(p => p.spec).map(p => p.r);
+  // a voice that stands out: no predefined theme, or only the rarest themes
+  const rank = {}; themes.forEach((t, i) => rank[t.id] = i);
+  let standout = per.filter(p => !p.ids.length && p.r.t.length > 18).sort((a, b) => b.r.t.length - a.r.t.length)[0];
+  if (!standout && themes.length > 5) standout = per.filter(p => p.ids.length && p.ids.every(id => rank[id] >= 5)).sort((a, b) => b.r.t.length - a.r.t.length)[0];
+  const A = { qi, n, themes, top5: themes.slice(0, 5), dims, words, unmatched, specifics, standout: standout ? standout.r.t : null, per };
+  A.insight = buildInsight(q, qi, A);
+  return A;
+}
+function buildInsight(q, qi, A) {
+  const n = A.n, min = CONFIG.minForInsight;
+  if (n < min || A.themes.length < 2) {
+    return { enough: false, msg: n < min ? `Only ${n} response${n === 1 ? '' : 's'} so far. At least ${min} are needed before a reliable insight can be drawn.`
+      : 'The responses so far do not show a clear common pattern yet. Review the individual answers in ALL RESPONSES.' };
+  }
+  const top = A.themes.slice(0, 3), lab = t => `${titleCase(t.label)} (${t.pct}%)`;
+  const lead = ['a good leader is most often described through', 'leaders most want to be remembered for', 'the most frequent changes for 2027 are'][qi];
+  let heard = `Across ${n} ${qi === 2 ? 'commitments' : 'responses'}, ${lead} ${joinAnd(top.map(lab))}.`;
+  const dtop = A.dims.slice().sort((a, b) => b.count - a.count)[0];
+  if (dtop && dtop.count) heard += ` ${titleCase(dtop.name)} is the strongest dimension, present in ${dtop.pct}% of responses.`;
+  if (qi === 2) heard += A.specifics.length ? ` ${A.specifics.length} of ${n} describe a specific, concrete action.` : ' None yet describes a specific, measurable action.';
+  const fr = top.map(t => qi === 0 ? TH[t.id].n : qi === 1 ? TH[t.id].g : TH[t.id].a);
+  const reflection = [
+    `If the leader we describe is defined by ${joinAnd(fr)}, then that is the leader each of us is responsible for becoming.`,
+    `The legacy this room hopes to leave is not a title, but ${joinAnd(fr)} — and it is being written in how we lead today.`,
+    `Our collective commitment for 2027 centres on ${joinAnd(fr)} — an amanah that becomes real only when we act on it.`][qi];
+  return { enough: true, heard, matters: A.themes.slice(0, Math.min(5, Math.max(3, A.themes.length >= 5 ? 5 : A.themes.length))), reflection, early: n < 10 };
+}
+
+/* ---------- session tree + transports ---------- */
+function emptyTree() {
+  const e = Date.now();
+  return { state: { started: false, cur: 0, closing: false, sid: rid(8), q: { q1: { status: 'idle', epoch: e }, q2: { status: 'idle', epoch: e }, q3: { status: 'idle', epoch: e } } }, responses: {}, participants: {} };
+}
+function getState(tree) {
+  const s = (tree && tree.state) || {}, q = s.q || {};
+  const one = k => ({ status: (q[k] && q[k].status) || 'idle', epoch: (q[k] && q[k].epoch) || 1 });
+  return { started: !!s.started, cur: Math.max(0, Math.min(3, +s.cur || 0)), closing: !!s.closing, sid: String(s.sid || ''), q: { q1: one('q1'), q2: one('q2'), q3: one('q3') } };
+}
+function setAt(root, path, val) {
+  if (!path.length) return (val && typeof val === 'object') ? val : {};
+  let o = root;
+  for (let i = 0; i < path.length - 1; i++) { if (typeof o[path[i]] !== 'object' || o[path[i]] === null) o[path[i]] = {}; o = o[path[i]]; }
+  if (val === null || val === undefined) delete o[path[path.length - 1]]; else o[path[path.length - 1]] = val;
+  return root;
+}
+class MemoryT {
+  constructor() { this.tree = emptyTree(); this.status = 'ready'; this.kind = 'memory'; this.onChange = null; this.onStatus = null; }
+  _emit() { if (this.onChange) this.onChange(); }
+  _st(s, msg) { this.status = s; this.error = msg || ''; if (this.onStatus) this.onStatus(); }
+  update(map) { Object.keys(map).forEach(k => { this.tree = setAt(this.tree, k.split('/').filter(Boolean), map[k]); }); this._persist(map); this._emit(); return Promise.resolve(); }
+  set(path, val) { return this.update({ [path]: val }); }
+  replace(tree) { this.tree = tree; this._persist(null); this._emit(); return Promise.resolve(); }
+  _persist() {}
+  close() {}
+}
+/* same-device transport: localStorage + BroadcastChannel (host tab <-> participant tab in ONE browser) */
+class LocalT extends MemoryT {
+  constructor(code) {
+    super(); this.kind = 'local'; this.key = 'lv:session:' + code; this.tree = ls.get(this.key, null) || emptyTree();
+    try { this.bc = new BroadcastChannel(this.key); this.bc.onmessage = () => this._reload(); } catch (e) {}
+    this._onStorage = e => { if (e.key === this.key) this._reload(); }; window.addEventListener('storage', this._onStorage);
+  }
+  _reload() { this.tree = ls.get(this.key, null) || emptyTree(); this._emit(); }
+  update(map) { this.tree = ls.get(this.key, null) || this.tree; return super.update(map); }
+  _persist() { ls.set(this.key, this.tree); try { this.bc && this.bc.postMessage(1); } catch (e) {} }
+  close() { try { this.bc && this.bc.close(); } catch (e) {} window.removeEventListener('storage', this._onStorage); }
+}
+/* Google Apps Script transport (Code.gs).
+   host  : polls getAll(key, fromRow) every ~2 s (only new sheet rows come back), writes setState(key, json)
+   phone : polls getState(pid) every ~4 s, sends submit(...) and join(...)
+   Every answer carries its question's epoch and the session id; RESET bumps them, old rows stay in the sheet. */
+class GasT extends MemoryT {
+  constructor(role, key) {
+    super(); this.kind = 'gas'; this.role = role; this.key = key || ''; this.status = 'connecting'; this._first = false;
+    this.lastRow = 1; this.rows = []; this.joined = 0; this.writing = false; this.pendingState = null; this._wp = null; this.wseq = 0; this.fails = 0; this.info = null; this.closed = false;
+    this.tree = { state: role === 'host' ? emptyTree().state : {}, responses: { q1: {}, q2: {}, q3: {} }, participants: {} };
+    this._tick = this._tick.bind(this); this._tick();
+    if (role === 'host') this._loadInfo();
+    this._vis = () => { if (!document.hidden) this._tick(); }; document.addEventListener('visibilitychange', this._vis);
+  }
+  async _loadInfo() {
+    try { this.info = await gs('info', this.key); this._emit(); } catch (e) { setTimeout(() => this._loadInfo(), 5000); }
+  }
+  _err(e) { return String((e && e.message) || e || ''); }
+  async _tick() {
+    if (this.closed || this.busy) return; clearTimeout(this.timer); this.busy = true;
+    const seq = this.wseq;
+    try {
+      if (this.role === 'host') {
+        const d = await gs('getAll', this.key, this.lastRow);
+        if (d.from === 1 && this.lastRow > 1) this.rows = [];
+        if (d.rows && d.rows.length) this.rows = this.rows.concat(d.rows);
+        this.lastRow = d.last; this.joined = +d.joined || 0;
+        if (seq === this.wseq && !this.writing && !this.pendingState && d.state && d.state.q) this.tree.state = d.state;
+        const R = { q1: {}, q2: {}, q3: {} };
+        this.rows.forEach(r => { const k = 'q' + r[2]; if (R[k] && r[5]) R[k][r[5]] = { t: String(r[3] || ''), ts: +r[0] || 0, ep: +r[4], sid: String(r[1] || '') }; });
+        this.tree.responses = R; this._emit();
+      } else {
+        const d = await gs('getState', P.pid);
+        this.tree.state = d.state || {};
+        const m = d.mine || {}; ['q1', 'q2', 'q3'].forEach(k => { if (m[k] != null) this.tree.responses[k] = { [P.pid]: { t: '•', ep: m[k] } }; else if (!P.mem[subKey(k, (this.tree.state.q && this.tree.state.q[k] && this.tree.state.q[k].epoch) || 1)]) this.tree.responses[k] = {}; });
+        this._emit();
+      }
+      this.fails = 0; if (!this._first) { this._first = true; this._emit(); } if (this.status !== 'live') this._st('live');
+    } catch (e) {
+      this.fails++;
+      if (/forbidden/.test(this._err(e))) this._st('error', 'This host link has no valid key. Open the host screen from the sheet menu: Leadership Voice > 3.');
+      else if (this.fails >= (this.role === 'host' ? 2 : 3) || (!this._first && this.fails >= 2)) this._st('error', 'Cannot reach the Google Sheet web app. Check the internet connection.');
+    }
+    this.busy = false;
+    // phones check every ~7 s on average to stay well inside Apps Script's limits for ~100+ phones
+    if (!this.closed) this.timer = setTimeout(this._tick, this.role === 'host' ? 2000 : (this._first ? 5500 + Math.random() * 3000 : 1500 + Math.random() * 1500));
+  }
+  _flushState() {
+    if (this.writing) return this._wp;
+    this.writing = true;
+    this._wp = (async () => {
+      try { while (this.pendingState) { const st = this.pendingState; this.pendingState = null; await gs('setState', this.key, JSON.stringify(st)); } }
+      catch (e) { this.pendingState = null; this._st('error', 'A change could not be saved (' + this._err(e) + ').'); throw e; }
+      finally { this.writing = false; this.wseq++; }
+    })();
+    return this._wp;
+  }
+  async update(map) {
+    const keys = Object.keys(map);
+    keys.forEach(k => { this.tree = setAt(this.tree, k.split('/').filter(Boolean), map[k]); }); this._emit();
+    if (this.role === 'host') {
+      if (keys.some(k => k.startsWith('state'))) { this.pendingState = JSON.parse(JSON.stringify(this.tree.state)); await this._flushState(); }
+      return;
+    }
+    for (const k of keys) {
+      const p = k.split('/').filter(Boolean), v = map[k]; if (!v) continue;
+      if (p[0] === 'responses' && /^q[123]$/.test(p[1])) {
+        for (let tries = 0; ; tries++) {
+          const r = await gs('submit', P.pid, p[1], v.t, v.ep);
+          if (r && r.ok) break;
+          if (r && r.code === 'busy' && tries < 5) { await sleep(700 + Math.random() * 1600); continue; }
+          const e = new Error((r && r.code) || 'error'); e.code = r && r.code; throw e;
+        }
+      } else if (p[0] === 'participants') await gs('join', P.pid, v.sid || '');
+    }
+  }
+  async replace(tree) {
+    this.tree.state = tree.state; this.tree.responses = { q1: {}, q2: {}, q3: {} }; this._emit();
+    this.pendingState = JSON.parse(JSON.stringify(tree.state)); await this._flushState();
+  }
+  close() { this.closed = true; clearTimeout(this.timer); document.removeEventListener('visibilitychange', this._vis); }
+}
+
+/* ---------- demo sample responses ---------- */
+const DEMO = {
+  q1: ['Leader yang mau mendengarkan timnya sebelum mengambil keputusan.', 'Someone who leads by example, bukan hanya memberi perintah.', 'Pemimpin yang berintegritas — jujur dan bisa dipercaya.',
+    'A leader who develops people and helps them grow.', 'Komunikasinya jelas dan terbuka, tidak ada yang ditutup-tutupi.', 'Adil kepada semua anggota tim, tidak pilih kasih.',
+    'Berani mengambil keputusan sulit dan bertanggung jawab atas hasilnya.', 'Someone who empowers the team and trusts them to deliver.', 'Pemimpin yang peduli pada orangnya, bukan hanya pada target.',
+    'Punya visi yang jelas dan mampu memberi arah bagi tim.', 'Menjadi teladan: konsisten antara ucapan dan tindakan.', 'A leader with integrity who takes ownership.',
+    'Mau memberi feedback yang jujur dan membangun.', 'Leader yang mengembangkan timnya sampai siap menjadi pemimpin berikutnya.', 'Empati — memahami kondisi tim sebelum menuntut hasil.',
+    'Someone who communicates clearly and listens actively.', 'Amanah, bertanggung jawab, dan tidak menyalahkan tim saat gagal.', 'Pemimpin yang terus belajar dan terbuka terhadap masukan.',
+    'Memberi kepercayaan dan ruang bagi tim untuk mencoba hal baru.', 'Tegas tetapi tetap menghargai setiap orang.', 'A leader who builds trust through transparency.',
+    'Bisa menginspirasi dan memotivasi tim di saat sulit.', 'Berpikir strategis, tapi tetap dekat dengan tim di lapangan.', 'Someone who cares about people and treats everyone fairly.',
+    'Konsisten, disiplin, dan memegang komitmen.', 'Pemimpin yang mengayomi dan membuat tim merasa aman untuk bersuara.', 'Mampu berkolaborasi lintas divisi, tidak bekerja dalam silo.',
+    'Leader yang mau turun tangan dan menjadi coach bagi timnya.', 'Rendah hati dan mau mengakui kesalahan.'],
+  q2: ['Beliau membantu saya bertumbuh lebih dari yang saya kira bisa.', 'A leader who trusted me with real responsibility.', 'Dia memberi saya kesempatan untuk memimpin proyek besar.',
+    'Someone who really listened.', 'Beliau menantang saya untuk menjadi lebih baik setiap hari.', 'Someone who believed in me before I believed in myself.',
+    'Pemimpin yang menyiapkan saya untuk peran berikutnya.', 'Beliau menginspirasi saya lewat teladannya.', 'A leader who treated people fairly.',
+    'Dia peduli pada saya sebagai manusia, bukan hanya sebagai karyawan.', 'Saya belajar arti integritas dari beliau.', 'Mentor terbaik yang pernah saya miliki.',
+    'Beliau selalu ada waktu untuk membimbing dan memberi masukan.', 'Karena beliau, saya jadi lebih percaya diri mengambil keputusan.', 'Someone who made a difference in my career.',
+    'Beliau jujur, apa adanya, dan bisa dipegang kata-katanya.', 'Dia mengajarkan saya untuk bertanggung jawab atas pekerjaan saya.', 'A leader who gave me room to make mistakes and learn.',
+    'Saya merasa dihargai dan didengar selama bekerja dengannya.', 'Beliau membuka jalan karir saya.', 'Tegas, tapi selalu adil dan mau menjelaskan alasannya.',
+    'Dia membuat saya berani mencoba hal-hal baru.', 'Someone who developed me into a leader.', 'Pemimpin yang mengayomi dan membela timnya.',
+    'Beliau menjadi contoh bagaimana memimpin dengan hati.', 'Saya ingin memimpin seperti beliau suatu hari nanti.', 'He coached me through my toughest year.',
+    'Bekerja bersamanya adalah pengalaman paling berkesan dalam karir saya.', 'Standar kerjanya tinggi, tapi kami selalu tahu alasannya.'],
+  q3: ['Lebih banyak mendengarkan tim sebelum memberi arahan.', 'Menyiapkan minimal 2 suksesor untuk posisi saya.', 'Delegate more effectively — tidak semua harus saya kerjakan sendiri.',
+    'Memberi feedback yang membangun setiap bulan, bukan hanya saat appraisal.', 'Jadwalkan sesi coaching 1-on-1 setiap dua minggu dengan tiap anggota tim.', 'Empower my team to make decisions.',
+    'Memperbaiki cara komunikasi: lebih jelas, lebih sering, lebih terbuka.', 'Membangun kepercayaan dengan menepati setiap komitmen.', 'Become more accountable for my team’s results.',
+    'Menjadi teladan dalam disiplin dan ketepatan waktu.', 'Be more intentional in developing people.', 'Meluangkan waktu lebih banyak bersama tim di lapangan, minimal seminggu sekali.',
+    'Mengambil keputusan lebih cepat dan berani.', 'Mengembangkan calon pemimpin masa depan dari dalam tim.', 'Kolaborasi lebih baik dengan divisi lain.',
+    'Berpikir lebih strategis, tidak tenggelam dalam urusan operasional.', 'Spend more time coaching, less time fixing.', 'Mengapresiasi pencapaian tim secara terbuka.',
+    'Memberi ruang bagi tim untuk berinovasi dan belajar dari kesalahan.', 'Listen more, talk less.', 'Follow up setiap komitmen sampai tuntas.',
+    'Membuat rencana pengembangan individu untuk setiap anggota tim di kuartal 1.', 'Lebih terbuka menerima masukan dari tim.', 'Lead by example dalam menjalankan amanah.',
+    'Mendelegasikan dengan jelas dan percaya pada tim.', 'Terus belajar dan memperbaiki diri sebagai leader.', 'Weekly check-in dengan tim untuk mendengar kendala mereka.',
+    'Lebih peduli pada kesejahteraan dan beban kerja tim.', 'Mengurangi rapat yang tidak perlu supaya tim punya ruang untuk bekerja.']
+};
+
+/* =====================================================================
+   HOST / PRESENTATION MODE
+   ===================================================================== */
+let ROLE = 'host';
+const app = $('#app');
+let T = null, realT = null, demoT = new MemoryT();
+const H = {
+  view: 'question', demo: false, demoRun: false, peek: false, nonce: 0,
+  wall: { frozenAt: null, hidden: false, cleared: {} },
+  settings: Object.assign({ baseUrl: '', expected: '' }, ls.get('lv:host:settings', {}))
+};
+const S = () => getState(T.tree);
+let raf = 0; const sched = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(); }); };
+function render() { if (ROLE === 'host') renderHost(); else renderParticipant(); }
+
+function responses(key) {
+  const o = (T.tree.responses && T.tree.responses[key]) || {}, ep = S().q[key].epoch;
+  const sid = S().sid;
+  return Object.keys(o).map(id => ({ id, t: String((o[id] && o[id].t) || '').slice(0, CONFIG.maxChars).trim(), ts: +(o[id] && o[id].ts) || 0, ep: o[id] && o[id].ep, sid: o[id] && o[id].sid }))
+    .filter(r => r.t && (r.ep == null || r.ep === ep) && (!r.sid || !sid || r.sid === sid)).sort((a, b) => a.ts - b.ts || a.id.localeCompare(b.id));
+}
+function participantCount() {
+  const sid = S().sid, set = new Set(), P0 = T.tree.participants || {};
+  Object.keys(P0).forEach(id => { const v = P0[id]; if (v && typeof v === 'object' && v.sid && sid && v.sid !== sid) return; set.add(id); });
+  QS.forEach(q => responses(q.key).forEach(r => set.add(r.id)));
+  return Math.max(set.size, (T && T.joined) || 0);
+}
+const totalResponses = () => QS.reduce((a, q) => a + responses(q.key).length, 0);
+const aCache = {};
+function analysis(qi) {
+  const list = responses(QS[qi].key), sig = (H.demo ? 'd' : 'r') + qi + '|' + list.length + '|' + (list.length ? list[list.length - 1].ts : 0);
+  if (!aCache[qi] || aCache[qi].sig !== sig) aCache[qi] = { sig, A: analyze(qi, list) };
+  return aCache[qi].A;
+}
+function gasInfo() { return realT && realT.kind === 'gas' ? realT.info : null; }
+function participantUrl() {
+  if (H.settings.baseUrl) return String(H.settings.baseUrl).trim();
+  if (!GAS) return location.href.split('#')[0] + '#join';
+  if (!/^https?:$/.test(location.protocol)) { const i = gasInfo(); return (i && i.pagesUrl) || ''; }
+  return location.origin + location.pathname;
+}
+function qrHint() {
+  return 'Open this host screen from the GitHub Pages address (menu Leadership Voice > 3 in the Google Sheet), or fill in the participant link in Settings.';
+}
+function connectReal() {
+  if (realT) realT.close();
+  realT = GAS ? new GasT('host', HOSTKEY) : new LocalT('local');
+  realT.onChange = sched; realT.onStatus = sched;
+  if (!H.demo) T = realT;
+}
+function modeInfo() {
+  if (H.demo) return { cls: 'demo', txt: H.demoRun ? 'DEMO MODE · SAMPLE DATA' : 'DEMO MODE · PAUSED', dot: true };
+  if (realT.kind === 'gas') {
+    if (realT.status === 'live') return { cls: 'live', txt: 'LIVE · SAVING TO GOOGLE SHEET', dot: true, pulse: true };
+    if (realT.status === 'connecting') return { cls: 'warn', txt: 'CONNECTING…' };
+    return { cls: 'warn', txt: 'CONNECTION PROBLEM' };
+  }
+  return { cls: '', txt: 'LOCAL MODE · THIS DEVICE ONLY' };
+}
+function qrSvg(text) {
+  const q = qrcode(0, 'M'); q.addData(text); q.make();
+  const n = q.getModuleCount(), m = 2; let d = '';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += `M${c + m} ${r + m}h1v1h-1z`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n + 2 * m} ${n + 2 * m}" shape-rendering="crispEdges" role="img" aria-label="QR code to join"><rect width="100%" height="100%" fill="#fff"/><path d="${d}" fill="#000"/></svg>`;
+}
+function toast(msg) { $$('.toast').forEach(t => t.remove()); const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2200); }
+function confirmBox(title, text, ok, fn) {
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<div class="m" role="dialog" aria-modal="true"><h3>${esc(title)}</h3><p>${esc(text)}</p><div class="rowbtn"><button class="btn ghost" data-x="0">CANCEL</button><button class="btn gold" data-x="1">${esc(ok)}</button></div></div>`;
+  m.addEventListener('click', e => { const x = e.target.closest('[data-x]'); if (e.target === m || x) { m.remove(); if (x && x.dataset.x === '1') fn(); } });
+  document.body.appendChild(m); $('[data-x="1"]', m).focus();
+}
+function download(name, text, type) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+async function copyText(t) {
+  try { await navigator.clipboard.writeText(t); } catch (e) { const x = document.createElement('textarea'); x.value = t; document.body.appendChild(x); x.select(); try { document.execCommand('copy'); } catch (e2) {} x.remove(); }
+  toast('Participant link copied');
+}
+
+/* ---------- shell ---------- */
+const NAV = [['overview', 'OVERVIEW'], ['question', 'QUESTIONS'], ['live', 'LIVE RESPONSES'], ['cloud', 'WORD CLOUD'], ['top5', 'TOP 5'], ['insights', 'INSIGHTS'], ['settings', 'SETTINGS']];
+function buildHost() {
+  app.innerHTML = `
+  <section id="opening" class="opening">
+    <div class="brandline"><b>LIPPOLAND</b> · LEADERSHIP OFFSITE 2026</div>
+    <h1>LEADERSHIP VOICE</h1>
+    <div class="sub">A Leadership Reflection &amp; Commitment Experience</div>
+    <div class="rule"></div>
+    <div class="q1">“Your voice matters.”</div>
+    <div class="q2">Take a moment to reflect on what leadership means to you.</div>
+    <div class="go"><button class="btn gold big" data-act="start">START SESSION</button></div>
+    <div class="links"><button class="link" data-act="demoStart">Try demo mode</button><button class="link" data-act="peek">Settings &amp; go-live setup</button><button class="link" data-act="fullscreen">Fullscreen</button></div>
+    <div class="q2" id="openMode" style="margin-top:2.4vh;font-size:11px;letter-spacing:.2em;animation-delay:1.8s"></div>
+  </section>
+  <section id="dash" class="host hidden">
+    <header class="top"><div class="brand">LEADERSHIP <b>VOICE</b></div>
+      <nav class="nav" aria-label="Host navigation">${NAV.map(([v, l]) => `<button data-act="view" data-v="${v}">${l}</button>`).join('')}</nav>
+      <div class="chips" id="chips"></div></header>
+    <main class="stage" id="stage"></main>
+    <footer class="ctrl" id="ctrl"></footer>
+  </section>`;
+}
+function renderHost() {
+  const st = S(), dash = st.started || H.peek;
+  $('#opening').classList.toggle('hidden', dash); $('#dash').classList.toggle('hidden', !dash);
+  if (!dash) { const m = modeInfo(); $('#openMode').textContent = m.txt + (realT.kind === 'local' && !H.demo ? ' — open the host link from the Google Sheet menu so phones can join' : realT.status === 'error' && !H.demo ? ' — ' + (realT.error || '') : ''); return; }
+  if (!st.started && H.view !== 'settings') H.view = 'settings';
+  $$('.nav button').forEach(b => b.classList.toggle('act', b.dataset.v === H.view || (H.view === 'all' && b.dataset.v === 'live')));
+  const m = modeInfo(), n = totalResponses(), p = participantCount();
+  setHtml($('#chips'), `<span class="chip ${m.cls}">${m.dot ? `<i class="dot ${m.pulse ? 'pulse' : ''}"></i>` : ''}${m.txt}</span>
+    <span class="chip opt2">PROGRESS <b>${st.closing ? 'CLOSING' : st.cur ? 'Q' + st.cur + '/3' : 'OPENING'}</b></span>
+    <span class="chip">RESPONSES <b id="chipN">${n}</b></span><span class="chip opt">PARTICIPANTS <b>${p}</b></span>`);
+  renderCtrl(st); renderStage(st);
+}
+function setHtml(el, html) { if (el._h !== html) { el.innerHTML = html; el._h = html; return true; } return false; }
+function renderCtrl(st) {
+  const c = $('#ctrl'); let h = '';
+  if (!st.started) { setHtml(c, `<button class="btn gold" data-act="start">START SESSION</button><span class="mute" style="font-size:12px">Session not started yet — configure it here, then start.</span><span class="grow"></span><button class="btn" data-act="backOpen">BACK TO OPENING</button>`); return; }
+  const q = st.cur ? QS[st.cur - 1] : null, qs = q ? st.q[q.key].status : '', n = q ? responses(q.key).length : 0;
+  h += `<button class="btn" data-act="prev" ${st.cur === 0 ? 'disabled' : ''} title="Previous question (←)">◀ PREVIOUS</button>
+    <span class="qpill">${q ? `QUESTION <b>${q.no}</b> · ${qs === 'idle' ? 'NOT OPENED' : qs.toUpperCase()} · <b>${n}</b>` : 'OPENING · JOIN'}</span>
+    <button class="btn" data-act="next" ${st.cur === 3 ? 'disabled' : ''} title="Next question (→)">NEXT QUESTION ▶</button><span class="sep"></span>`;
+  if (q) {
+    h += qs === 'open' ? `<button class="btn on" data-act="pause" title="P">PAUSE RESPONSES</button>` : qs === 'paused' ? `<button class="btn gold" data-act="resume" title="P">RESUME RESPONSES</button>` : `<button class="btn gold" data-act="activate" title="A">ACTIVATE QUESTION</button>`;
+    h += `<button class="btn" data-act="close" ${qs === 'open' || qs === 'paused' ? '' : 'disabled'}>CLOSE QUESTION</button><button class="btn danger" data-act="resetQ">RESET QUESTION</button><span class="sep"></span>`;
+    if (H.view === 'live' || H.view === 'all') {
+      h += `<button class="btn ${H.view === 'live' ? 'on' : ''}" data-act="view" data-v="live">LIVE</button><button class="btn ${H.view === 'all' ? 'on' : ''}" data-act="view" data-v="all">ALL RESPONSES</button>`;
+      if (H.view === 'live') h += `<button class="btn ${H.wall.frozenAt ? 'gold' : ''}" data-act="freeze" title="Space">${H.wall.frozenAt ? 'RESUME LIVE' : 'FREEZE'}</button><button class="btn" data-act="hide">${H.wall.hidden ? 'SHOW' : 'HIDE'}</button><button class="btn" data-act="clear" title="Clears the screen only. No data is deleted.">CLEAR SCREEN</button>`;
+    } else h += `<button class="btn" data-act="view" data-v="all">ALL RESPONSES</button>`;
+  }
+  h += `<span class="grow"></span><button class="btn ${st.closing ? 'on' : ''}" data-act="closing">CLOSING</button><button class="btn" data-act="fullscreen" title="F">FULLSCREEN</button>`;
+  setHtml(c, h);
+}
+const stage = () => $('#stage');
+function mount(key, cls, html) {
+  const s = stage(), k = key + '|' + (H.demo ? 'd' : 'r');
+  if (s.dataset.key === k) return false;
+  s.dataset.key = k; s.classList.toggle('isdemo', H.demo); s.innerHTML = `<div class="view ${cls}">${html}</div>` + (H.demo ? '<div class="wm">DEMO MODE — SAMPLE DATA</div>' : ''); return true;
+}
+function renderStage(st) {
+  const needsQ = ['live', 'all', 'cloud', 'top5', 'insights'].includes(H.view);
+  if (needsQ && !st.cur) { mount('noq|' + H.view, '', `<div class="empty"><div class="kicker">LEADERSHIP VOICE</div><div class="t">Move to Question 01 to see this view.</div><div>Use NEXT QUESTION ▶ below, then ACTIVATE QUESTION.</div></div>`); return; }
+  VIEWS[H.view](st, st.cur ? QS[st.cur - 1] : null, st.cur - 1);
+}
+const head = (q, title, right) => `<div class="vhead"><div><div class="kicker">QUESTION ${q.no} · ${esc(title)}</div><h2>${esc(q.title)}</h2><div class="qline">${esc(q.q)}</div></div>${right || `<div class="count"><div class="n" data-n>0</div><div class="l">RESPONSES</div></div>`}</div>`;
+const statusHtml = s => `<span class="status ${s === 'open' ? 'open' : ''}">${s === 'open' ? '<i class="dot pulse"></i>' : ''}${{ idle: 'NOT YET OPEN', open: 'LIVE · RESPONSES OPEN', paused: 'RESPONSES PAUSED', closed: 'QUESTION CLOSED' }[s]}</span>`;
+function qrPanel() {
+  return `<aside class="qr"><div class="t">SCAN TO SHARE YOUR VOICE</div><div class="s">Scan the QR code using your smartphone camera.</div><div class="code" id="qrCode"></div><div class="url" id="qrUrl"></div>
+    <button class="btn" data-act="copy">COPY PARTICIPANT LINK</button><div class="warn" id="qrWarn"></div></aside>`;
+}
+function updateQr() {
+  const u = participantUrl(), box = $('#qrCode'); if (!box) return;
+  const sig = u || ('hint:' + qrHint());
+  if (box.dataset.u !== sig) { box.dataset.u = sig; box.innerHTML = u ? qrSvg(u) : `<div class="noqr">${esc(qrHint())}</div>`; $('#qrUrl').textContent = u; }
+  $('#qrWarn').textContent = H.demo ? 'Demo mode: phone submissions are not collected. Switch to the real session in Settings.'
+    : !GAS ? 'Local preview: config.js has no Apps Script URL, so phones cannot join yet.'
+      : realT.status === 'error' ? (realT.error || 'Connection problem.')
+        : /^http:\/\//.test(u) ? 'This link is not https: open the host screen from the GitHub Pages address.' : '';
+}
+
+const VIEWS = {
+  question(st, q) {
+    if (!q) {
+      mount('lobby', '', `<div class="qv"><div class="main"><div class="kicker">WELCOME</div><div class="lobbyh" style="margin-top:2vh">LEADERSHIP VOICE</div>
+        <div class="lobbyq">“Before we talk about leadership, let’s reflect on what leadership truly means.”</div>
+        <div class="stat"><div><div class="n" id="pN">0</div><div class="l">PARTICIPANTS JOINED</div></div></div></div>${qrPanel()}</div>`);
+      $('#pN').textContent = participantCount(); updateQr(); return;
+    }
+    mount('question|' + q.key, '', `<div class="qv"><div class="main"><div class="kicker">QUESTION ${q.no} OF 03 · ${q.tag}</div><div class="ptitle">${esc(q.flow)}</div>
+      <h1>${esc(q.q)}</h1><div class="sup">${esc(q.sub)}</div>
+      <div class="stat"><div><div class="n" id="qN">0</div><div class="l">RESPONSES</div></div><div id="qS"></div></div></div>${qrPanel()}</div>`);
+    $('#qN').textContent = responses(q.key).length; setHtml($('#qS'), statusHtml(st.q[q.key].status)); updateQr();
+  },
+  live(st, q) {
+    const fresh = mount('live|' + q.key, '', head(q, 'LIVE RESPONSES', `<div class="count"><div class="frozen" id="fz"></div><div class="n" data-n>0</div><div class="l">RESPONSES</div></div>`) + `<div class="wall" id="wall"></div>`);
+    const wall = $('#wall'), all = responses(q.key); $('[data-n]', stage()).textContent = all.length;
+    const cleared = H.wall.cleared[q.key] || 0;
+    let list = all.filter(r => r.ts > cleared && (!H.wall.frozenAt || r.ts <= H.wall.frozenAt));
+    const waiting = H.wall.frozenAt ? all.filter(r => r.ts > H.wall.frozenAt).length : 0;
+    $('#fz').textContent = H.wall.frozenAt ? 'SCREEN FROZEN' + (waiting ? ' · +' + waiting + ' NEW' : '') : '';
+    const W = wall.clientWidth, Ht = wall.clientHeight, cols = W > 1500 ? 4 : W > 900 ? 3 : W > 560 ? 2 : 1, rows = Math.max(1, Math.min(4, Math.floor(Ht / (Ht > 760 ? 200 : 150))));
+    wall.style.gridTemplateColumns = `repeat(${cols},1fr)`; wall.style.gridTemplateRows = `repeat(${rows},1fr)`;
+    list = list.slice(-cols * rows).reverse();
+    const want = new Set(list.map(r => r.id)); $$('.card', wall).forEach(c => { if (!want.has(c.dataset.id)) c.remove(); });
+    const have = new Set($$('.card', wall).map(c => c.dataset.id));
+    list.slice().reverse().forEach(r => {
+      if (have.has(r.id)) return;
+      const c = document.createElement('div'); c.className = 'card' + (r.t.length > 170 ? ' xlong' : r.t.length > 95 ? ' long' : '') + (fresh ? '' : ' fresh'); c.dataset.id = r.id; c.textContent = r.t;
+      c.style.setProperty('--d', (7 + Math.random() * 5).toFixed(1) + 's'); c.style.setProperty('--dl', (0.8 + Math.random() * 2).toFixed(1) + 's');
+      wall.prepend(c); if (!fresh) setTimeout(() => c.classList.remove('fresh'), 6000);
+    });
+    let msg = $('#wallMsg');
+    const text = H.wall.hidden ? ['Responses are hidden', 'Press SHOW to display them again. All responses are safe.'] : !list.length ? [st.q[q.key].status === 'open' ? 'Waiting for the first voices…' : 'No responses on screen', all.length ? 'The screen was cleared. New responses will appear here; nothing was deleted.' : 'Responses will appear here as participants submit.'] : null;
+    if (text) { if (!msg) { msg = document.createElement('div'); msg.id = 'wallMsg'; msg.className = 'wallmsg'; wall.parentNode.appendChild(msg); } msg.style.top = wall.offsetTop + 'px'; setHtml(msg, `<div class="empty"><div class="t">${text[0]}</div><div>${text[1]}</div></div>`); }
+    else if (msg) msg.remove();
+  },
+  all(st, q, qi) {
+    mount('all|' + q.key, '', head(q, 'ALL RESPONSES') + `<div class="all" id="all"></div>` + (qi === 2 ? `<div class="foot">Responses describing a specific, concrete action are highlighted and listed first.</div>` : ''));
+    const box = $('#all'), list = responses(q.key), A = analysis(qi); $('[data-n]', stage()).textContent = list.length;
+    const n = list.length; box.style.setProperty('--min', n <= 8 ? '420px' : n <= 24 ? '320px' : n <= 48 ? '250px' : '210px'); box.style.setProperty('--fs', n <= 8 ? 'clamp(17px,1.7vw,30px)' : n <= 24 ? 'clamp(14px,1.2vw,21px)' : n <= 48 ? 'clamp(13px,1vw,17px)' : '13px');
+    const want = new Set(list.map(r => r.id)); $$('.card', box).forEach(c => { if (!want.has(c.dataset.id)) c.remove(); });
+    const have = new Set($$('.card', box).map(c => c.dataset.id)), spec = new Set(A.specifics.map(r => r.id));
+    list.forEach(r => { if (have.has(r.id)) return; const c = document.createElement('div'); c.dataset.id = r.id; const s = spec.has(r.id); c.className = 'card' + (s ? ' spec' : ''); if (s) { c.style.order = -1; c.innerHTML = '<span class="tag">SPECIFIC ACTION</span>'; } c.appendChild(document.createTextNode(r.t)); box.appendChild(c); });
+    let e = $('.empty', box); if (!n && !e) box.innerHTML = `<div class="empty" style="grid-column:1/-1;padding:12vh 0"><div class="t">No responses yet</div></div>`; else if (n && e) e.remove();
+  },
+  cloud(st, q, qi) {
+    mount('cloud|' + q.key, '', head(q, 'WORD CLOUD') + `<div class="cloud" id="cloud"></div><div class="foot">Word size reflects how many responses mention the word. Filler words are removed automatically.</div>`);
+    const A = analysis(qi); $('[data-n]', stage()).textContent = A.n; layoutCloud($('#cloud'), A.words, aCache[qi].sig);
+  },
+  top5(st, q, qi) {
+    mount('top5|' + q.key, '', head(q, 'TOP 5 MOST MENTIONED THEMES').replace(esc(q.title), esc(q.t5)) +
+      `<div class="t5">${[1, 2, 3, 4, 5].map(i => `<div class="t5row"><div class="rk">0${i}</div><div><div class="nm">—</div><div class="ds">&nbsp;</div><div class="bar"><i></i></div></div><div><div class="pc">—</div><div class="ct">&nbsp;</div></div></div>`).join('')}</div>
+      <div class="foot">Themes are generated automatically by keyword analysis (not AI). % = share of responses that mention the theme; one response can touch several themes.</div>`);
+    const A = analysis(qi); $('[data-n]', stage()).textContent = A.n; const max = A.top5[0] ? A.top5[0].pct : 1;
+    $$('.t5row', stage()).forEach((row, i) => {
+      const t = A.top5[i]; row.classList.toggle('has', !!t);
+      $('.nm', row).textContent = t ? t.label : '—'; $('.ds', row).textContent = t ? t.desc : ' ';
+      $('.pc', row).textContent = t ? t.pct + '%' : '—'; $('.ct', row).textContent = t ? t.count + (t.count === 1 ? ' RESPONSE' : ' RESPONSES') : ' ';
+      $('.bar i', row).style.width = t ? Math.max(4, t.pct / Math.max(max, 1) * 100) + '%' : '0';
+    });
+  },
+  insights(st, q, qi) {
+    mount('insights|' + q.key, 'insv', head(q, 'INSIGHTS').replace(esc(q.title), esc(q.insT)) + `<div id="insBody" style="flex:1;display:flex;flex-direction:column;min-height:0"></div>`);
+    const A = analysis(qi), I = A.insight; $('[data-n]', stage()).textContent = A.n; const body = $('#insBody'); let h;
+    if (!I.enough) h = `<div class="empty"><div class="kicker">NOT ENOUGH DATA YET</div><div class="t">${esc(I.msg)}</div><div>Insights are rule-based and only shown when the responses support them.</div></div>`;
+    else {
+      const max = I.matters[0].pct || 1, dmax = Math.max.apply(null, A.dims.map(d => d.count).concat(0));
+      const sp = A.specifics.slice().sort((x, y) => x.t.length - y.t.length).slice(0, 2), spShow = sp.length > 1 && sp[0].t.length + sp[1].t.length > 130 ? sp.slice(0, 1) : sp;
+      const extra = qi === 2 && sp.length ? `<div class="voice"><h3>MOST SPECIFIC COMMITMENT${spShow.length > 1 ? 'S' : ''}</h3>${spShow.map(r => `<q>\u201C${esc(r.t)}\u201D</q>`).join('')}</div>`
+        : A.standout ? `<div class="voice"><h3>A VOICE THAT STANDS OUT</h3><q>\u201C${esc(A.standout)}\u201D</q></div>` : '';
+      h = `<div class="ins"><div class="panel"><h3>WHAT WE HEARD</h3><p class="big">${esc(I.heard)}</p>
+          ${A.dims.length ? `<div class="dims">${A.dims.map(d => `<div class="dim ${d.count === dmax && dmax ? 'top' : ''}"><div class="v">${d.pct}%</div><div class="k">${d.name}</div></div>`).join('')}</div>` : ''}${extra}</div>
+        <div class="panel"><h3>WHAT MATTERS MOST</h3>${I.matters.map(t => `<div class="mrow"><div class="nm">${esc(t.label)}</div><div class="pc">${t.pct}%</div><div class="bar"><i style="width:${t.pct / max * 100}%"></i></div></div>`).join('')}</div>
+        <div class="refl"><h3>LEADERSHIP REFLECTION</h3><p>${esc(I.reflection)}</p><div class="trans">“${esc(q.transition)}”</div></div></div>
+        <div class="foot">Rule-based insight generated from keyword analysis of ${A.n} response${A.n === 1 ? '' : 's'} (no AI)${A.unmatched ? ' \u00B7 ' + A.unmatched + ' response' + (A.unmatched === 1 ? '' : 's') + ' raised ideas beyond the predefined themes' : ''}${I.early ? ' · early signal: fewer than 10 responses' : ''}.</div>`;
+    }
+    setHtml(body, h);
+    const pn = $('.panel', body), vc = $('.voice', body); if (pn && vc) { vc.style.display = ''; if (pn.scrollHeight > pn.clientHeight + 2) vc.style.display = 'none'; }
+  },
+  overview(st) {
+    mount('overview', '', `<div class="vhead"><div><div class="kicker">SESSION ANALYTICS</div><h2>OVERVIEW</h2></div><div class="rowbtn"><button class="btn" data-act="csv">EXPORT CSV</button><button class="btn" data-act="json">EXPORT JSON</button><button class="btn" data-act="summary">DOWNLOAD SUMMARY</button></div></div><div class="scroll" id="ovBody"></div>`);
+    const total = totalResponses(), p = participantCount(), exp = +H.settings.expected || 0, denom = exp || p;
+    const rate = denom ? Math.min(100, Math.round(total / (denom * 3) * 100)) : null;
+    const allWords = wordFreq(QS.reduce((a, q) => a.concat(responses(q.key)), [])).slice(0, 14);
+    const h = `<div class="kpis">
+        <div class="kpi"><div class="v">${total}</div><div class="k">TOTAL RESPONSES</div></div>
+        <div class="kpi"><div class="v">${p}</div><div class="k">PARTICIPANTS</div><div class="x">${exp ? 'of ' + exp + ' expected' : 'devices that joined or responded'}</div></div>
+        <div class="kpi"><div class="v">${rate == null ? '—' : rate + '%'}</div><div class="k">PARTICIPATION RATE</div><div class="x">${rate == null ? 'available once participants join' : 'responses ÷ (' + denom + (exp ? ' expected' : ' joined') + ' × 3 questions)'}</div></div>
+        <div class="kpi"><div class="v" style="font-size:clamp(20px,2vw,34px);padding:8px 0">${st.closing ? 'CLOSING' : st.cur ? 'QUESTION ' + st.cur + ' OF 3' : 'OPENING'}</div><div class="k">SESSION PROGRESS</div><div class="x">${esc(modeInfo().txt)}</div></div></div>
+      <div class="grid3">${QS.map((q, i) => {
+      const A = analysis(i), r = denom ? Math.min(100, Math.round(A.n / denom * 100)) : 0;
+      return `<div class="box"><h4>QUESTION ${q.no} · ${st.q[q.key].status === 'idle' ? 'NOT OPENED' : st.q[q.key].status}</h4><div class="qq">${esc(q.title)}</div>
+          <div class="li"><span>Responses</span><span>${A.n}${denom ? ' · ' + r + '%' : ''}</span></div><div class="bar" style="margin:8px 0 12px"><i style="width:${r}%"></i></div>
+          ${A.top5.length ? A.top5.map((t, k) => `<div class="li"><span>0${k + 1} · ${esc(t.label)}</span><span>${t.pct}%</span></div>`).join('') : '<p>No themes yet.</p>'}
+          <div class="words">${A.words.slice(0, 8).map(w => `<span>${esc(w.label)}<b>${w.c}</b></span>`).join('')}</div>
+          <p>${A.insight.enough ? '<b>Collective insight:</b> ' + esc(A.insight.reflection) : esc(A.insight.msg)}</p></div>`;
+    }).join('')}</div>
+      <div class="grid2"><div class="box"><h4>MOST FREQUENTLY MENTIONED WORDS · ALL QUESTIONS</h4><div class="words">${allWords.length ? allWords.map(w => `<span>${esc(w.label)}<b>${w.c}</b></span>`).join('') : '<p>No responses yet.</p>'}</div>
+          <p style="margin-top:14px">Themes and insights are generated automatically by keyword analysis of the actual responses — no figures are invented and no AI model is involved.</p></div>
+        <div class="box"><h4>RUN OF SHOW · FOR EACH QUESTION</h4><ol><li><b>NEXT QUESTION</b>, then <b>ACTIVATE QUESTION</b> — phones show the question.</li><li><b>LIVE RESPONSES</b> — answers appear as they arrive.</li><li><b>FREEZE</b> (or <b>PAUSE RESPONSES</b>) when you are ready.</li><li><b>ALL RESPONSES</b> → <b>WORD CLOUD</b> → <b>TOP 5</b> → <b>INSIGHTS</b>.</li><li>Read the transition line on the Insights screen, then <b>NEXT QUESTION</b>.</li><li>After Question 03: <b>CLOSING</b>.</li></ol></div></div>`;
+    setHtml($('#ovBody'), h);
+  },
+  settings() {
+    const built = mount('settings|' + H.nonce, '', `<div class="vhead"><div><div class="kicker">HOST</div><h2>SETTINGS</h2></div></div><div class="scroll">
+      <div class="grid2">
+        <div class="box"><h4>SESSION</h4><div class="note" id="setMode"></div>
+          <div class="field"><label for="setUrl">Participant link (this is what the QR code opens)</label><input readonly id="setUrl"></div>
+          <div class="rowbtn"><button class="btn" data-act="copy">COPY PARTICIPANT LINK</button></div>
+          <div class="field"><label for="setExp">Expected number of participants (optional, for participation rate)</label><input id="setExp" type="number" min="0" inputmode="numeric" value="${esc(H.settings.expected)}"></div>
+          <div class="field"><label for="setBase">Override participant link (optional — leave empty to use the link from the server)</label><input id="setBase" placeholder="https://…" value="${esc(H.settings.baseUrl)}"></div>
+          <div class="rowbtn"><button class="btn gold" data-act="saveSettings">SAVE</button><button class="btn danger" data-act="resetSession">RESET SESSION</button></div></div>
+        <div class="box"><h4>GOOGLE SHEET · DATA</h4><div class="note" id="setLive"></div>
+          <div class="kv" id="setKv"></div>
+          <ol>
+            <li>Peserta <b>tidak perlu login</b> — cukup scan QR. Tiap HP hanya bisa menjawab sekali per pertanyaan.</li>
+            <li>Setiap jawaban <b>langsung tersimpan</b> sebagai baris baru di sheet <code>Responses</code>.</li>
+            <li>RESET tidak menghapus apa pun: baris lama tetap di sheet (kolom <i>Sesi</i> berbeda).</li>
+            <li>Setelah acara: di Google Sheet pilih <i>File › Download › Microsoft Excel</i> lalu simpan ke folder Anda.</li>
+          </ol></div>
+      </div>
+      <div class="grid2">
+        <div class="box"><h4>DEMO MODE</h4><div class="note" id="setDemo"></div>
+          <div class="rowbtn"><button class="btn gold" data-act="demoStart">START DEMO</button><button class="btn" data-act="demoStop">STOP DEMO</button><button class="btn" data-act="demoFill">LOAD ALL SAMPLE RESPONSES</button></div>
+          <div class="rowbtn"><button class="btn" data-act="demoClear">CLEAR DEMO RESPONSES</button><button class="btn" data-act="demoReset">RESET DEMO</button><button class="btn" data-act="toReal">SWITCH TO REAL SESSION</button></div>
+          <p>Demo mode plays ${DEMO.q1.length} realistic sample responses per question into whichever question is open. Demo data lives only in this browser tab’s memory and is never saved to the data folder.</p></div>
+        <div class="box"><h4>EXPORT &amp; KEYBOARD</h4><div class="rowbtn" style="margin-top:0"><button class="btn" data-act="csv">EXPORT CSV</button><button class="btn" data-act="json">EXPORT JSON</button><button class="btn" data-act="summary">DOWNLOAD SUMMARY</button></div>
+          <p style="margin-top:14px;line-height:2"><kbd>→</kbd> <kbd>←</kbd> next / previous question · <kbd>A</kbd> activate · <kbd>P</kbd> pause / resume · <kbd>Space</kbd> freeze / resume live wall<br>
+          <kbd>1</kbd> question · <kbd>2</kbd> live · <kbd>3</kbd> all responses · <kbd>4</kbd> word cloud · <kbd>5</kbd> top 5 · <kbd>6</kbd> insights · <kbd>0</kbd> overview · <kbd>F</kbd> fullscreen</p>
+          <p>In fullscreen the menus fade out after a few seconds; move the mouse to bring them back.</p></div>
+      </div>
+    </div>`);
+    const m = modeInfo(), pu = participantUrl(); $('#setUrl').value = pu || '(not ready yet)';
+    const sm = $('#setMode'); sm.className = 'note' + (m.cls === 'live' ? ' ok' : ''); sm.textContent = 'Current mode: ' + m.txt + (H.demo ? '. Sample data only — the real session is untouched.' : realT.kind === 'local' ? '. Opened as a file: works between browser tabs on this device only.' : '.');
+    const lv = $('#setLive'); lv.className = 'note' + (realT.kind === 'gas' && realT.status === 'live' ? ' ok' : ' bad');
+    lv.textContent = realT.kind !== 'gas' ? 'config.js has no Apps Script URL: works between browser tabs on this device only.'
+      : realT.status === 'live' ? 'Connected. Every answer is saved to the Google Sheet.' : realT.status === 'connecting' ? 'Connecting to the Google Sheet…' : (realT.error || 'Connection problem.');
+    const i = gasInfo(), rows = [];
+    if (i) { rows.push(['Participant link', participantUrl() || '(not set)']); if (i.sheetUrl) rows.push(['Google Sheet', i.sheetUrl]); }
+    setHtml($('#setKv'), rows.map(r => `<span>${esc(r[0])}</span><span>${/^https:\/\//.test(r[1]) ? `<a href="${esc(r[1])}" target="_blank" rel="noopener" style="color:var(--gold2)">${esc(r[1])}</a>` : esc(r[1])}</span>`).join(''));
+    $('#setDemo').textContent = H.demo ? (H.demoRun ? 'Demo is running. Activate a question to watch sample responses arrive.' : 'Demo is paused (sample data still on screen).') : 'Demo is off. You are looking at the real session.';
+    return built;
+  },
+  closing() {
+    mount('closing', 'closing', `<div class="ttl">LEADERSHIP IS A LEGACY</div><div class="rule"></div>
+      <div class="st serif"><span>Leadership is not about the title we hold.</span><span>It is about <em>the people we develop,</em></span><span><em>the trust we build,</em></span><span>and <em>the impact we leave behind.</em></span></div>
+      <div class="rule" style="animation:fade 2s 4.6s both"></div>
+      <div class="sp">Every leader has an opportunity and an obligation to make someone better, create new leaders, and leave a meaningful legacy.</div>
+      <div class="fin"><span>OUR LEADERSHIP.</span><span>OUR RESPONSIBILITY.</span><span>OUR IMPACT.</span></div>`);
+  }
+};
+
+/* ---------- word cloud layout (spiral placement, no overlap) ---------- */
+let mctx = null;
+function layoutCloud(box, words, sig) {
+  const W = box.clientWidth, Ht = box.clientHeight; if (W < 80 || Ht < 80) return;
+  const key = sig + '|' + W + 'x' + Ht; if (box.dataset.sig === key) return; box.dataset.sig = key;
+  const list = words.slice(0, 44);
+  if (!list.length) { box.innerHTML = `<div class="empty" style="height:100%"><div class="t">The word cloud will form as responses arrive</div></div>`; return; }
+  const e = $('.empty', box); if (e) e.remove();
+  mctx = mctx || document.createElement('canvas').getContext('2d');
+  const fam = getComputedStyle(document.body).fontFamily, cmax = list[0].c, cmin = list[list.length - 1].c;
+  let maxF = Math.max(30, Math.min(Ht * 0.21, W * 0.09)), placed = [];
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const minF = Math.max(12, maxF * 0.17); placed = []; let miss = 0;
+    list.forEach((w, i) => {
+      const f = cmax === cmin ? Math.max(minF * 1.6, maxF * 0.3) : minF + (maxF - minF) * Math.pow((w.c - cmin) / (cmax - cmin), 0.8);
+      mctx.font = `700 ${f}px ${fam}`; const tw = mctx.measureText(w.label).width + w.label.length * f * 0.02 + f * 0.5, th = f * 1.12;
+      for (let t = 0; t < 2600; t++) {
+        const a = t * 0.24, r = 1.5 * a, x = W / 2 + r * Math.cos(a) * (W / Ht) * 0.8 - tw / 2, y = Ht / 2 + r * Math.sin(a) * 0.8 - th / 2;
+        if (x < 0 || y < 0 || x + tw > W || y + th > Ht) { if (r > Math.max(W, Ht)) break; continue; }
+        if (placed.some(p => x < p.x + p.w && x + tw > p.x && y < p.y + p.h && y + th > p.y)) continue;
+        placed.push({ word: w, i, x, y, w: tw, h: th, f }); return;
+      }
+      miss++;
+    });
+    if (!miss) break; maxF *= 0.86;
+  }
+  const colors = ['#FBF7EC', '#FF9C86', '#CDB8AA', '#FBF7EC', '#F95A44'], seen = new Set();
+  const spans = {}; $$('span', box).forEach(s => spans[s.dataset.w] = s);
+  placed.forEach(p => {
+    const id = p.word.w; seen.add(id); let s = spans[id];
+    if (!s) { s = document.createElement('span'); s.dataset.w = id; s.textContent = p.word.label; s.style.left = (W / 2) + 'px'; s.style.top = (Ht / 2) + 'px'; s.style.fontSize = '10px'; box.appendChild(s); s.getBoundingClientRect(); }
+    s.style.left = (p.x + p.f * 0.25) + 'px'; s.style.top = (p.y + p.f * 0.06) + 'px'; s.style.fontSize = p.f + 'px';
+    s.style.color = p.i < 3 ? '#F95A44' : colors[p.i % colors.length]; s.style.opacity = p.i < 3 ? 1 : Math.max(0.62, 1 - p.i * 0.012);
+    s.title = p.word.c + ' response' + (p.word.c === 1 ? '' : 's');
+  });
+  Object.keys(spans).forEach(id => { if (!seen.has(id)) { spans[id].style.opacity = 0; setTimeout(() => spans[id].remove(), 900); } });
+}
+
+/* ---------- export ---------- */
+const stamp = () => new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
+const modeName = () => H.demo ? 'DEMO (sample data)' : realT.kind === 'gas' ? 'LIVE (Google Sheet)' : 'LOCAL (single device)';
+function exportData() {
+  const st = S();
+  return { app: 'Leadership Voice 2027', exportedAt: new Date().toISOString(), mode: modeName(), sessionCode: H.demo ? 'DEMO' : S().sid, participants: participantCount(), totalResponses: totalResponses(),
+    analysisMethod: 'Rule-based keyword analysis (no AI). Percentages = share of responses mentioning a theme.',
+    questions: QS.map((q, i) => {
+      const A = analysis(i);
+      return { number: i + 1, title: q.title, question: q.q, status: st.q[q.key].status, responseCount: A.n,
+        topThemes: A.top5.map((t, k) => ({ rank: k + 1, theme: t.label, responses: t.count, percent: t.pct, description: t.desc })),
+        dimensions: A.dims, topWords: A.words.slice(0, 15).map(w => ({ word: w.label, responses: w.c })),
+        insight: A.insight.enough ? { whatWeHeard: A.insight.heard, whatMattersMost: A.insight.matters.map(t => t.label), leadershipReflection: A.insight.reflection } : { note: A.insight.msg },
+        responses: A.per.map(p => ({ text: p.r.t, submittedAt: new Date(p.r.ts).toISOString(), themes: p.ids.map(id => A.themes.find(t => t.id === id).label), specificAction: p.spec || undefined })) };
+    }) };
+}
+const EXPORTS = {
+  csv() {
+    const d = exportData(), c = v => '"' + String(v).replace(/"/g, '""') + '"', rows = [['mode', 'session_code', 'question_no', 'question', 'response', 'submitted_at', 'themes', 'specific_action']];
+    d.questions.forEach(q => q.responses.forEach(r => rows.push([d.mode, d.sessionCode, q.number, q.question, r.text, r.submittedAt, r.themes.join(' | '), r.specificAction ? 'yes' : ''])));
+    download(`leadership-voice-responses-${stamp()}.csv`, '﻿' + rows.map(r => r.map(c).join(',')).join('\r\n'), 'text/csv;charset=utf-8'); toast(`CSV exported · ${rows.length - 1} responses`);
+  },
+  json() { download(`leadership-voice-session-${stamp()}.json`, JSON.stringify(exportData(), null, 2), 'application/json'); toast('JSON exported'); },
+  summary() {
+    const d = exportData(), L = ['LEADERSHIP VOICE — LIPPOLAND LEADERSHIP OFFSITE 2026 — SESSION SUMMARY', '='.repeat(46), `Exported: ${new Date().toLocaleString()}`, `Mode: ${d.mode}`, `Session code: ${d.sessionCode}`, `Participants: ${d.participants}`, `Total responses: ${d.totalResponses}`, `Method: ${d.analysisMethod}`, ''];
+    d.questions.forEach(q => {
+      L.push(`QUESTION ${q.number} — ${q.title}`, q.question, `Responses: ${q.responseCount}`, '', 'Top themes:');
+      q.topThemes.length ? q.topThemes.forEach(t => L.push(`  ${t.rank}. ${t.theme} — ${t.percent}% (${t.responses})`)) : L.push('  (none yet)');
+      if (q.dimensions.length) L.push('', 'Dimensions: ' + q.dimensions.map(x => `${x.name} ${x.pct}%`).join(' · '));
+      L.push('', 'Most mentioned words: ' + (q.topWords.map(w => `${w.word} (${w.responses})`).join(', ') || '(none)'), '');
+      if (q.insight.note) L.push('Insight: ' + q.insight.note); else L.push('What we heard: ' + q.insight.whatWeHeard, 'Leadership reflection: ' + q.insight.leadershipReflection);
+      L.push('', 'All responses:'); q.responses.forEach((r, i) => L.push(`  ${i + 1}. ${r.text}`)); L.push('', '-'.repeat(46), '');
+    });
+    download(`leadership-voice-summary-${stamp()}.txt`, L.join('\r\n'), 'text/plain;charset=utf-8'); toast('Summary downloaded');
+  }
+};
+
+/* ---------- demo engine ---------- */
+function demoAdd(key) {
+  const have = (demoT.tree.responses && demoT.tree.responses[key]) || {}, pool = DEMO[key].map((t, i) => [i, t]).filter(([i]) => !have['demo' + i]);
+  if (!pool.length) return false; const [i, t] = pool[Math.floor(Math.random() * Math.min(pool.length, 4))];
+  demoT.update({ ['responses/' + key + '/demo' + i]: { t, ts: Date.now() }, ['participants/demo' + i]: 1 }); return true;
+}
+setInterval(() => { if (ROLE !== 'host' || !H.demo || !H.demoRun) return; const st = getState(demoT.tree); if (!st.cur) return; const k = 'q' + st.cur; if (st.q[k].status === 'open' && Math.random() < 0.8) demoAdd(k); }, 1100);
+
+/* ---------- actions ---------- */
+const curKey = () => 'q' + S().cur;
+const safe = p => p && p.catch(() => toast(realT && realT.kind === 'gas' ? 'Could not save — check the internet connection' : 'Could not save'));
+const ACT = {
+  start() { H.peek = false; H.view = 'question'; safe(T.update({ 'state/started': true, 'state/cur': 0, 'state/closing': false })); },
+  peek() { H.peek = true; H.view = 'settings'; sched(); },
+  backOpen() { H.peek = false; sched(); },
+  view(el) { const v = el.dataset.v; if (!S().started && v !== 'settings') return toast('Press START SESSION first'); H.view = v; sched(); },
+  go(n) { H.view = 'question'; H.wall.frozenAt = null; H.wall.hidden = false; safe(T.update({ 'state/cur': n, 'state/closing': false })); },
+  prev() { const c = S().cur; if (c > 0) ACT.go(c - 1); },
+  next() { const c = S().cur; if (c < 3) ACT.go(c + 1); },
+  activate() { const st = S(); if (!st.cur) return; const m = {}; QS.forEach(q => { if (q.key !== curKey() && ['open', 'paused'].includes(st.q[q.key].status)) m['state/q/' + q.key + '/status'] = 'closed'; }); m['state/q/' + curKey() + '/status'] = 'open'; H.wall.frozenAt = null; safe(T.update(m)); toast('Question ' + st.cur + ' is open'); },
+  pause() { if (S().cur) safe(T.update({ ['state/q/' + curKey() + '/status']: 'paused' })); },
+  resume() { if (S().cur) safe(T.update({ ['state/q/' + curKey() + '/status']: 'open' })); },
+  close() { if (S().cur) safe(T.update({ ['state/q/' + curKey() + '/status']: 'closed' })); },
+  resetQ() { const c = S().cur; if (!c) return; confirmBox('Reset Question 0' + c + '?', 'All ' + responses(curKey()).length + ' responses to this question will be permanently deleted and participants will be able to answer again. Other questions are not affected.', 'RESET QUESTION', () => { delete H.wall.cleared[curKey()]; H.wall.frozenAt = null; safe(T.update({ ['responses/' + curKey()]: null, ['state/q/' + curKey() + '/status']: 'idle', ['state/q/' + curKey() + '/epoch']: Date.now() })); toast('Question reset'); }); },
+  resetSession() { confirmBox('Reset the entire session?', (H.demo ? 'All demo data' : 'All responses to all three questions') + ' will be permanently deleted and the session returns to the opening screen. Export first if you need the data.', 'RESET SESSION', () => { H.wall = { frozenAt: null, hidden: false, cleared: {} }; H.view = 'question'; H.peek = false; safe(T.replace(emptyTree())); toast('Session reset'); }); },
+  closing() { H.view = 'closing'; stage().dataset.key = ''; safe(T.update({ 'state/closing': true })); },
+  fullscreen() { const d = document; if (d.fullscreenElement) d.exitFullscreen(); else if (d.documentElement.requestFullscreen) d.documentElement.requestFullscreen().catch(() => toast('Press F11 for fullscreen')); },
+  freeze() { H.wall.frozenAt = H.wall.frozenAt ? null : Date.now(); sched(); },
+  hide() { H.wall.hidden = !H.wall.hidden; sched(); },
+  clear() { H.wall.cleared[curKey()] = Date.now(); toast('Screen cleared · no data deleted'); sched(); },
+  copy() { const u = participantUrl(); if (!u) return toast('The participant link is not ready yet'); copyText(u); },
+  saveSettings() { H.settings.expected = $('#setExp').value.trim(); H.settings.baseUrl = $('#setBase').value.trim(); ls.set('lv:host:settings', H.settings); H.nonce++; toast('Settings saved'); sched(); },
+  demoStart() { H.demo = true; H.demoRun = true; T = demoT; H.peek = false; const st = S(); if (!st.started) { H.view = 'question'; demoT.update({ 'state/started': true }); } toast('Demo mode · sample data'); stage() && (stage().dataset.key = ''); sched(); },
+  demoStop() { if (!H.demo) return toast('Demo is not running'); H.demoRun = false; toast('Demo stopped'); sched(); },
+  demoFill() { if (!H.demo) ACT.demoStart(); const m = {}, now = Date.now(); QS.forEach(q => DEMO[q.key].forEach((t, i) => { if (!((demoT.tree.responses || {})[q.key] || {})['demo' + i]) m['responses/' + q.key + '/demo' + i] = { t, ts: now + i }; m['participants/demo' + i] = 1; })); demoT.update(m); toast('All sample responses loaded'); },
+  demoClear() { demoT.update({ responses: null, participants: null }); H.wall.cleared = {}; toast('Demo responses cleared'); },
+  demoReset() { const t = emptyTree(); t.state.started = true; demoT.replace(t); H.demo = true; H.demoRun = true; T = demoT; H.view = 'question'; H.wall = { frozenAt: null, hidden: false, cleared: {} }; toast('Demo reset'); sched(); },
+  toReal() { H.demo = false; H.demoRun = false; T = realT; H.view = 'question'; H.wall = { frozenAt: null, hidden: false, cleared: {} }; stage().dataset.key = ''; toast('Real session'); sched(); },
+  csv: () => EXPORTS.csv(), json: () => EXPORTS.json(), summary: () => EXPORTS.summary()
+};
+
+function bootHost() {
+  buildHost(); connectReal();
+  demoT.onChange = sched;
+  document.addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (b && !b.disabled && ACT[b.dataset.act]) ACT[b.dataset.act](b); });
+  document.addEventListener('keydown', e => {
+    if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'Escape') { $$('.modal').forEach(m => m.remove()); return; }
+    if ($('.modal')) return;
+    const k = e.key.toLowerCase();
+    if (k === 'f') return ACT.fullscreen();
+    if (!S().started) return;
+    const map = { '0': 'overview', '1': 'question', '2': 'live', '3': 'all', '4': 'cloud', '5': 'top5', '6': 'insights' };
+    if (map[k]) { H.view = map[k]; sched(); }
+    else if (k === 'arrowright') ACT.next(); else if (k === 'arrowleft') ACT.prev();
+    else if (k === 'a') { const s = S(); if (s.cur && s.q[curKey()].status !== 'open') ACT.activate(); }
+    else if (k === 'p') { const s = S(); if (s.cur) { const x = s.q[curKey()].status; if (x === 'open') ACT.pause(); else if (x === 'paused') ACT.resume(); } }
+    else if (k === ' ' && H.view === 'live') { e.preventDefault(); ACT.freeze(); }
+  });
+  let idleT; const wake = () => { document.body.classList.remove('idle'); clearTimeout(idleT); if (document.fullscreenElement && !['settings', 'overview'].includes(H.view)) idleT = setTimeout(() => document.body.classList.add('idle'), 3500); };
+  ['mousemove', 'keydown', 'click', 'fullscreenchange'].forEach(ev => document.addEventListener(ev, wake));
+  window.addEventListener('resize', sched);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { const c = $('#cloud'); if (c) c.dataset.sig = ''; sched(); });
+  sched();
+}
+
+/* =====================================================================
+   PARTICIPANT MODE (mobile)
+   ===================================================================== */
+const P = { pid: null, drafts: {}, mem: {}, err: '', sending: false, key: '', reg: '' };
+const subKey = (k, ep) => 'lv:sub:' + (GAS ? 'gas' : 'local') + ':' + k + ':' + ep;
+function isSubmitted(k, ep) {
+  const own = T.tree.responses && T.tree.responses[k] && T.tree.responses[k][P.pid];
+  if (own && own.t && own.ep === ep) return true;
+  return !!(P.mem[subKey(k, ep)] || ls.get(subKey(k, ep), false));
+}
+function bootParticipant() {
+  document.body.classList.add('part');
+  P.pid = ls.get('lv:pid', null); if (!P.pid) { P.pid = 'p' + rid(14); ls.set('lv:pid', P.pid); }
+  T = GAS ? new GasT('participant', '') : new LocalT('local');
+  T.onChange = sched; T.onStatus = sched;
+  app.innerHTML = `<div class="pt"><header><div class="b">LEADERSHIP VOICE</div><div class="m">Your voice matters.</div><div class="ev">LippoLand · Leadership Offsite 2026</div></header><main id="pMain"></main><footer id="pFoot"></footer></div>`;
+  $('#pMain').addEventListener('input', e => { if (e.target.id === 'ans') { const k = e.target.dataset.k; P.drafts[k] = e.target.value; $('#cnt').textContent = e.target.value.length + ' / ' + CONFIG.maxChars; if (P.err) { P.err = ''; $('#pErr').textContent = ''; } } });
+  $('#pMain').addEventListener('click', e => { if (e.target.closest('#send')) submitAnswer(); });
+  sched();
+}
+async function submitAnswer() {
+  const st = S(), q = QS[st.cur - 1]; if (!q || P.sending) return;
+  const t = ($('#ans').value || '').replace(/\s+/g, ' ').trim().slice(0, CONFIG.maxChars);
+  if (!t) { P.err = 'Please write your answer first.'; $('#pErr').textContent = P.err; return; }
+  if (st.q[q.key].status !== 'open') return;
+  P.sending = true; const btn = $('#send'); btn.disabled = true; btn.textContent = 'SENDING…';
+  const ep = st.q[q.key].epoch;
+  try {
+    await T.update({ ['responses/' + q.key + '/' + P.pid]: { t, ts: Date.now(), ep } });
+    const k = subKey(q.key, ep); P.mem[k] = true; ls.set(k, true); delete P.drafts[q.key]; P.err = '';
+  } catch (e) {
+    if (T.tree.responses && T.tree.responses[q.key]) delete T.tree.responses[q.key][P.pid];
+    P.err = e && e.code === 'closed' ? 'This question is no longer open for answers.' : 'Your answer could not be sent. Check your internet connection and try again.';
+  }
+  P.sending = false; P.key = ''; sched();
+}
+function renderParticipant() {
+  const st = S(), q = st.cur ? QS[st.cur - 1] : null, qs = q ? st.q[q.key] : null, live = T.kind === 'gas';
+  const sub = q && isSubmitted(q.key, qs.epoch);
+  let scr = live && !T._first ? (T.status === 'error' ? 'offline' : 'connecting') : st.closing ? 'closing' : (!st.started || !q || qs.status === 'idle') ? 'waiting' : sub ? 'thanks' : qs.status === 'open' ? 'form' : qs.status;
+  if (st.started && (!live || T._first) && P.reg !== (st.sid || '-')) { P.reg = st.sid || '-'; Promise.resolve(T.update({ ['participants/' + P.pid]: { ts: Date.now(), sid: st.sid || '' } })).catch(() => { P.reg = ''; }); }
+  $('#pFoot').textContent = live ? (T.status === 'live' ? 'Anonymous · no login · connected' : 'Reconnecting…') : 'Preview · this device only';
+  const key = scr + '|' + st.cur + '|' + (qs ? qs.epoch : '') + '|' + P.err; if (key === P.key) return; P.key = key;
+  const prog = q ? `<div class="qn">QUESTION ${q.no} OF 03</div><div class="prog" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="${st.cur}">${[1, 2, 3].map(i => `<i class="${i < st.cur ? 'd' : i === st.cur ? 'c' : ''}"></i>`).join('')}</div>` : '';
+  const wait = t => `<div class="wait"><i class="dot pulse"></i>${t}</div>`;
+  const H2 = {
+    connecting: () => `<div class="center"><p>Connecting to the session…</p></div>`,
+    offline: () => `<div class="center"><h1 class="serif">We can’t reach the session</h1><p>Please check your internet connection. This page reconnects automatically.</p></div>`,
+    waiting: () => `<div class="center"><div class="kicker">WELCOME</div><h1 class="serif">Share your perspective. Reflect honestly.</h1><p>Help us understand what leadership truly means.</p><p style="font-size:14px">Three short questions · anonymous · no login needed</p>${wait(q ? 'Question ' + q.no + ' will open shortly' : 'Waiting for the host to begin')}</div>`,
+    form: () => `${prog}<h1>${esc(q.q)}</h1><div class="sup">${esc(q.sub)}</div>
+      <textarea id="ans" data-k="${q.key}" maxlength="${CONFIG.maxChars}" placeholder="Tulis jawaban Anda di sini…" aria-label="Your answer">${esc(P.drafts[q.key] || '')}</textarea>
+      <div class="meta"><span>Anonymous · one response per question</span><span id="cnt">${(P.drafts[q.key] || '').length} / ${CONFIG.maxChars}</span></div>
+      <button class="btn gold big" id="send">SUBMIT</button><div class="err" id="pErr" role="alert">${esc(P.err)}</div>`,
+    thanks: () => `<div class="center">${prog}<div class="ring">✓</div><h1 class="serif">Thank you for sharing your voice.</h1><p>Your response has been added to our collective reflection.</p>${st.cur < 3 ? wait('The next question will appear here') : '<p style="font-size:14px">This was the final question.</p>'}</div>`,
+    paused: () => `<div class="center">${prog}<h1 class="serif">Responses are paused</h1><p>Please look at the main screen. ${P.drafts[q.key] ? 'Your draft is kept and will return if the question reopens.' : ''}</p></div>`,
+    closed: () => `<div class="center">${prog}<h1 class="serif">This question is closed</h1><p>Thank you. Please follow the discussion on the main screen.</p>${st.cur < 3 ? wait('The next question will appear here') : ''}</div>`,
+    closing: () => `<div class="center"><div class="kicker">LEADERSHIP IS A LEGACY</div><h1 class="serif" style="font-style:italic;line-height:1.3">“Leadership is not about the title we hold, but the people we develop, the trust we build, and the impact we leave behind.”</h1><p>Thank you for sharing your voice.</p></div>`
+  };
+  const main = $('#pMain'); main.innerHTML = H2[scr](); main.style.animation = 'none'; void main.offsetWidth; main.style.animation = '';
+}
+
+/* ---------- ambient gold particles ---------- */
+(function sparks() {
+  const c = $('#sparks'); if (!c || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const x = c.getContext('2d'); if (!x) return; let W, Hh, ps = [];
+  const size = () => { W = c.width = innerWidth; Hh = c.height = innerHeight; };
+  size(); addEventListener('resize', size);
+  for (let i = 0; i < 34; i++) ps.push({ x: Math.random(), y: Math.random(), r: 0.6 + Math.random() * 1.6, v: 0.00012 + Math.random() * 0.0003, a: 0.12 + Math.random() * 0.4, p: Math.random() * 6.28 });
+  let last = 0; (function loop(t) {
+    requestAnimationFrame(loop); if (t - last < 40 || document.hidden) return; last = t; x.clearRect(0, 0, W, Hh);
+    ps.forEach(p => { p.y -= p.v * 2.5; if (p.y < -0.02) { p.y = 1.02; p.x = Math.random(); } x.globalAlpha = p.a * (0.6 + 0.4 * Math.sin(t / 1400 + p.p)); x.fillStyle = '#F95A44'; x.beginPath(); x.arc(p.x * W + Math.sin(t / 3000 + p.p) * 12, p.y * Hh, p.r, 0, 6.3); x.fill(); });
+  })(0);
+})();
+
+{
+  const p = new URLSearchParams(location.search);
+  if (GAS) { ROLE = p.get('view') === 'host' ? 'host' : 'participant'; HOSTKEY = String(p.get('key') || ''); }
+  else ROLE = /^#join$/i.test(location.hash) ? 'participant' : 'host';
+  if (ROLE === 'host') bootHost(); else bootParticipant();
+}
+
+</script>
+</body>
+</html>
