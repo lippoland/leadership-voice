@@ -1080,14 +1080,14 @@ function showGroup(g, q) {
 }
 function layoutBubbles(box, groups) {
   const W = box.clientWidth, Ht = box.clientHeight; if (W < 80 || Ht < 80) return;
-  const MAXB = W < 700 ? 10 : 18, top = groups.slice(0, MAXB), more = groups.length - top.length;
+  const MAXB = Math.max(10, Math.min(32, Math.floor(W * Ht / 22000))), top = groups.slice(0, MAXB), more = groups.length - top.length;
   const sig = top.map(g => g.id + ':' + g.n).join('|') + '|' + more + '|' + W + 'x' + Ht;
   if (box.dataset.sig === sig) return; box.dataset.sig = sig;
   box._groups = groups;
   const max = top.length ? top[0].n : 1, base = Math.min(W, Ht);
   let placed = [], scale = 1;
-  for (let attempt = 0; attempt < 12; attempt++) {
-    const rMax = base * 0.3 * scale, rMin = Math.max(34, base * 0.085 * scale);
+  for (let attempt = 0; attempt < 16; attempt++) {
+    const rMax = base * (top.length > 16 ? 0.25 : 0.3) * scale, rMin = Math.max(24, base * 0.08 * scale);
     placed = []; let miss = 0;
     top.forEach(g => {
       const r = max > 1 ? rMin + (rMax - rMin) * Math.sqrt((g.n - 1) / (max - 1)) : Math.min(rMax, Math.max(rMin, base * 0.15 * scale));
@@ -1120,14 +1120,15 @@ function layoutBubbles(box, groups) {
     n.style.fontSize = Math.max(16, Math.min(92, r * (solo ? 0.24 : 0.4))) + 'px';
     n.innerHTML = ''; n.appendChild(document.createTextNode(String(g.n)));
     if (!solo && r > 64) { const l = document.createElement('div'); l.className = 'bb-l'; l.textContent = 'answers'; l.style.fontSize = Math.max(9, Math.min(14, r * 0.07)) + 'px'; n.appendChild(l); }
-    const showTheme = !!g.theme && !solo;
-    h.hidden = !showTheme; t.hidden = showTheme; qd.hidden = !showTheme || r < 92;
+    const showTheme = !!g.theme && !solo, tiny = r < 42;
+    h.hidden = !showTheme || tiny; t.hidden = showTheme || tiny; qd.hidden = !showTheme || r < 92;
+    if (tiny) n.style.fontSize = Math.max(14, r * 0.62) + 'px';
     if (showTheme) {
       h.textContent = g.label; h.style.fontSize = Math.max(10, Math.min(26, r * 0.11)) + 'px';
       qd.textContent = '“' + g.sample + '”'; qd.style.fontSize = Math.max(11, Math.min(20, r * 0.09)) + 'px';
     } else {
       t.textContent = g.sample + (g.n > 1 && !g.theme ? '' : ''); t.style.fontSize = Math.max(10, Math.min(22, r * 0.115)) + 'px';
-      t.style.webkitLineClamp = String(r > 130 ? 6 : r > 95 ? 5 : r > 65 ? 4 : 3);
+      t.style.webkitLineClamp = String(r > 130 ? 6 : r > 95 ? 5 : r > 65 ? 4 : r > 52 ? 3 : 2);
     }
     if (prev[g.id] != null && g.n > prev[g.id]) { el.classList.add('grow'); clearTimeout(el._gt); el._gt = setTimeout(() => el.classList.remove('grow'), 2600); }
   });
