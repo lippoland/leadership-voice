@@ -24,6 +24,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--sans);-webkit-fon
 button{font-family:inherit;color:inherit;cursor:pointer;border:0;background:none}
 button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .hidden{display:none!important}
+[hidden]{display:none!important}
 .bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
    radial-gradient(1100px 700px at 12% -10%,rgba(61,23,15,.95),transparent 60%),
@@ -410,7 +411,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
    signed in to several or company Google accounts work normally.
    Opened as a local file without config.js, the page runs in single-device LOCAL mode.
    ===================================================================== */
-const APP_VERSION = 'v2026.11.25-5';
+const APP_VERSION = 'v2026.11.25-7';
 const CONFIG = {
   maxChars: 300,
   minForInsight: 5
@@ -1352,7 +1353,7 @@ const ACT = {
   hide() { H.wall.hidden = !H.wall.hidden; sched(); },
   clear() { H.wall.cleared[curKey()] = Date.now(); toast('Screen cleared · no data deleted'); sched(); },
   openScreen() {
-    const w = window.open(location.pathname + '?view=screen' + (HOSTKEY ? '&key=' + encodeURIComponent(HOSTKEY) : ''), 'lv-presenter-screen', 'popup=yes,width=1280,height=720');
+    const w = window.open(location.pathname + '?view=screen' + (HOSTKEY ? '&key=' + encodeURIComponent(HOSTKEY) : '') + '&v=' + encodeURIComponent(APP_VERSION), 'lv-presenter-screen', 'popup=yes,width=1280,height=720');
     if (!w) toast('Allow pop-ups for this site to open the presenter screen'); else { screenWin = w; lastSnap = ''; setTimeout(broadcastScreen, 600); setTimeout(broadcastScreen, 1500); }
   },
   theme(el) {
@@ -1460,6 +1461,7 @@ function bootScreen() {
     return true;
   };
   if (gas) { gas.onChange = () => { if (followGas()) sched(); updWait(); }; gas.onStatus = gas.onChange; }
+  updWait(); setTimeout(updWait, 1500);
   const scrMsg = data => {
     const m = parseScreenMsg(data); if (!m) return;
     if (m.t === 'snap' || m.t === 'alive') { lastLocal = Date.now(); updWait(); }
